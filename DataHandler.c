@@ -18,7 +18,7 @@ node* listCreate()
 }
 
 //查询并返回节点指针地址，若没找到则返回NULL
-void* listGetNode(node* head, int index)
+node* listGetNode(node* head, int index)
 {
     listInfo* info=((listInfo*)head->data);
 
