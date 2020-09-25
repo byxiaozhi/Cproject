@@ -1,9 +1,35 @@
-#include <stdio.h>
-#include <stdlib.h>
+#include "stdio.h"
+#include "stdlib.h"
+#include "DataHandler.h"
+
 
 int main()
 {
-    scanf()
-    printf("ZHW SB\n");
+    node* head=listCreate();
+
+    for(int i=0; i<10; i++)
+    {
+        int *data;
+        data=(int *)malloc(sizeof(int));
+        *data=i;
+        //listAddFirst(head,data);
+        listAddLast(head,data);
+    }
+
+    for(int i=0; i<listSize(head); i++)
+    {
+        printf("%d",*(int*)listGet(head,i));
+    }
+
+    printf("\n");
+    listRemove(head,2);
+
+    for(int i=0; i<listSize(head); i++)
+    {
+        printf("%d",*(int*)listGet(head,i));
+    }
+
+    //printf("%d",head->next);
+
     return 0;
 }
