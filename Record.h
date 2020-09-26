@@ -1,6 +1,6 @@
 #pragma once
 
-const char *types[3]={"检查","开药","住院"};
+
 
 typedef struct{
     char patientId[100];//患者身份证

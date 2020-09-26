@@ -1,35 +1,43 @@
 #include "stdio.h"
 #include "stdlib.h"
+#include "windows.h"
 #include "DataHandler.h"
-
+#include "Doctor.h"
+#include "Record.h"
+#include "Patient.h"
+#include "Hospital.h"
 
 int main()
 {
-    node* head=listCreate();
-
-    for(int i=0; i<10; i++)
+    int select;
+    while(1)
     {
-        int *data;
-        data=(int *)malloc(sizeof(int));
-        *data=i;
-        //listAddFirst(head,data);
-        listAddLast(head,data);
+        system("cls");
+        SetConsoleTitle("医院管理系统");
+
+        printf("主菜单：\n");
+        printf("1.挂号管理\n");
+        printf("2.患者管理\n");
+        printf("3.医生管理\n");
+        printf("4.财务管理\n");
+        printf("请选择:");
+
+        scanf("%d",&select);
+        switch(select)
+        {
+        case 1:
+            recordManage();
+            break;
+        case 2:
+            patientManage();
+            break;
+        case 3:
+            docterManage();
+            break;
+        case 4:
+            hospitalManage();
+            break;
+        }
     }
-
-    for(int i=0; i<listSize(head); i++)
-    {
-        printf("%d",*(int*)listGet(head,i));
-    }
-
-    printf("\n");
-    //listDelete(head);
-
-    for(int i=0; i<listSize(head); i++)
-    {
-        printf("%d",*(int*)listGet(head,i));
-    }
-
-    //printf("%d",head->next);
-
     return 0;
 }
