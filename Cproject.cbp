@@ -35,6 +35,22 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="DataHandler.h" />
+		<Unit filename="Doctor.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="Doctor.h" />
+		<Unit filename="Hospital.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="Hospital.h" />
+		<Unit filename="Patient.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="Patient.h" />
+		<Unit filename="Record.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="Record.h" />
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>
