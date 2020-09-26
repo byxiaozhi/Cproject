@@ -3,24 +3,24 @@
 
 int selector(int args, ...)
 {
-    void *result;
+    void *parameter;
     int select;
     va_list vl;
     va_start(vl,args);
-    printf("菜单：\n");
+    printf("\n  菜单\n");
     for (int i = 1; i <= args; i++)
     {
-        result = va_arg(vl, void *);
-        printf("%d.%s\n", i, result);
+        parameter = va_arg(vl, void*);
+        printf("  %d.%s\n", i, parameter);
     }
-    printf("请选择：");
+    printf("  请选择：");
     scanf("%d",&select);
     if(select>0 && select<=args)
     {
         for(int i=0; i<select; i++)
-            result = va_arg(vl, void *);
-        if(result)
-            (*(void(*)(void))(result))();
+            parameter = va_arg(vl, void*);
+        if(parameter)
+            (*(void(*)(void))(parameter))();
     }
     va_end(vl);
     return select;
