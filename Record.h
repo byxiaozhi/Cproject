@@ -14,7 +14,7 @@ typedef struct{
 //购买类型
 typedef struct {
     char name[100];//商品名称
-    int amount;//金额，单位为分
+    int price;//金额，单位为分
 }record_buy;
 
 //租用类型
