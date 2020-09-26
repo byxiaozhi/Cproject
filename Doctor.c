@@ -2,7 +2,6 @@
 #include "stdlib.h"
 #include "windows.h"
 
-
 //¼¶±ğ
 const char *levels[4]= {"Ö÷ÈÎÒ½Ê¦","¸±Ö÷ÈÎÒ½Ê¦","Ö÷ÖÎÒ½Ê¦","×¡ÔºÒ½Ê¦"};
 
@@ -12,28 +11,37 @@ const char *departments[27]= {"ÄÚ¿Æ","Íâ¿Æ","¶ù¿Æ","¸¾¿Æ","ÑÛ¿Æ","¶ú±Çºí¿Æ","¿ÚÇ
                               "ÆÕÍâ¿Æ","¹Ç¿Æ","Éñ¾­Íâ¿Æ","¸Îµ¨Íâ¿Æ","ÃÚÄòÍâ¿Æ","ÉÕÉË¿Æ","¸¾¿Æ","²ú¿Æ"
                              };
 
-void docterManage()
+void docterAdd()
 {
     int select;
-    while(1)
+    printf("Ìí¼ÓÒ½Éú");
+    scanf("%d",&select);
+}
+
+void docterDelete()
+{
+
+
+}
+
+void docterList()
+{
+
+
+}
+
+void docterInfo()
+{
+
+
+}
+
+void docterManage()
+{
+    do
     {
         system("cls");
         SetConsoleTitle("Ò½Éú¹ÜÀí");
-
-        printf("Ö÷²Ëµ¥£º\n");
-        printf("1.¹¦ÄÜÒ»\n");
-        printf("2.¹¦ÄÜ¶ş\n");
-        printf("3.¹¦ÄÜÈı\n");
-        printf("4.·µ»Ø\n");
-        printf("ÇëÑ¡Ôñ:");
-
-        scanf("%d",&select);
-        switch(select)
-        {
-
-        }
-
-        if(select==4)
-            break;
     }
+    while(selector(5,"Ôö¼ÓÒ½Éú","É¾³ıÒ½Éú","ÁĞ³öËùÓĞÒ½Éú","²éÑ¯Ò½ÉúĞÅÏ¢","·µ»Ø",docterAdd,docterDelete,docterList,docterInfo,NULL)!=5);
 }

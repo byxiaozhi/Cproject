@@ -1,5 +1,5 @@
 #pragma once
-
+#include "DataHandler.h"
 typedef struct {
     char id[100];//身份证，唯一
     char name[100];//姓名
@@ -10,3 +10,5 @@ typedef struct {
     int bill_hospitalized;//住院账单
     int deposit;//剩余押金
 }patient;
+
+node* patients;

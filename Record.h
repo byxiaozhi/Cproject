@@ -1,7 +1,5 @@
 #pragma once
-
-
-
+#include "DataHandler.h"
 typedef struct{
     char patientId[100];//患者身份证
     int docterId;//医生工号
@@ -23,3 +21,6 @@ typedef struct {
     int endDateTime[4];//结束租用时间
     int deposit;//押金，单位为分
 }record_hospitalized;
+
+
+node* records;
