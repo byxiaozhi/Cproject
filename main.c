@@ -22,7 +22,7 @@ int main()
     }
 
     printf("\n");
-    listRemove(head,2);
+    //listDelete(head);
 
     for(int i=0; i<listSize(head); i++)
     {

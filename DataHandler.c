@@ -117,3 +117,11 @@ int listSize(node* head)
     else
         return ((listInfo*)head->data)->size;
 }
+
+//É¾³ıÕû¸öÁ´±í
+void listDelete(node* head)
+{
+    while(listRemove(head,0));
+    free(head->data);
+    free(head);
+}

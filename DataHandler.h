@@ -12,6 +12,7 @@ typedef struct listInfo
 } listInfo;
 
 node* listCreate();
+void listDelete();
 void* listGet(node* head, int index);
 void listAddFirst(node* head, void* data);
 void listAddLast(node* head, void* data);
