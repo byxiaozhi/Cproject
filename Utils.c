@@ -1,6 +1,7 @@
 #include "utils.h"
 #include "stdarg.h"
 #include "stdio.h"
+#include "windows.h"
 
 //²Ëµ¥Ñ¡ÔñÆ÷
 int selector(int args, ...)
@@ -14,7 +15,7 @@ int selector(int args, ...)
     for (int i = 1; i <= args; i++)
     {
         parameter = va_arg(vl, void*);
-        printf("  %d.%s\n\n", i, parameter);
+        printf("  %d.%s\n\n", i, (char*)parameter);
     }
     printf("  ÇëÑ¡Ôñ£º");
     scanf("%d",&select);
@@ -73,7 +74,7 @@ int dayCount(int year,int month,int day)
         sum = 334 + day;
         break;
     }
-    if(month > 2 && ((year % 4 == 0) && (year % 100 !=0) || (year % 400) == 0))
+    if(month > 2 && (((year % 4 == 0) && (year % 100 !=0)) || (year % 400) == 0))
         sum++;
     return sum;
 }

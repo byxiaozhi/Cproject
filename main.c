@@ -6,6 +6,7 @@
 #include "Record.h"
 #include "Patient.h"
 #include "Hospital.h"
+#include "Utils.h"
 
 void recordManage();
 void patientManage();

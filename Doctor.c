@@ -14,7 +14,7 @@ const char *departments[27]= {"ÄÚ¿Æ","Íâ¿Æ","¶ù¿Æ","¸¾¿Æ","ÑÛ¿Æ","¶ú±Çºí¿Æ","¿ÚÇ
 
 void docterSave()
 {
-    FILE *fp=fopen("docters.dat", "w+");
+    FILE *fp=fopen("docters.txt", "w+");
     for(int i=0; i<listSize(docters); i++)
     {
         docter *temp=listGet(docters,i);
@@ -25,7 +25,7 @@ void docterSave()
 
 void docterRead()
 {
-    FILE *fp=fopen("docters.dat", "r");
+    FILE *fp=fopen("docters.txt", "r");
     if(!fp)
     {
         return;

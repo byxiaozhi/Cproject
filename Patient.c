@@ -7,7 +7,7 @@
 
 void patientSave()
 {
-    FILE *fp=fopen("patients.dat", "w+");
+    FILE *fp=fopen("patients.txt", "w+");
     for(int i=0; i<listSize(patients); i++)
     {
         patient *temp=listGet(patients,i);
@@ -19,7 +19,7 @@ void patientSave()
 
 void patientRead()
 {
-    FILE *fp=fopen("patients.dat", "r");
+    FILE *fp=fopen("patients.txt", "r");
 
     if(!fp)
     {
