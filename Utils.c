@@ -27,3 +27,24 @@ int selector(int args, ...)
     va_end(vl);
     return select;
 }
+
+
+
+char weekDayCount(int year, int month, int day)
+{
+    int weekday = 0;
+    if ((month == 1) || (month == 2))
+    {
+        month += 12;
+        year--;
+    }
+    weekday = (day + 2 * month + 3 * (month + 1) / 5 + year + year / 4 - year / 100 + year / 400) % 7 + 1;
+    return weekday;
+}
+
+void clear()
+{
+    system("cls");
+    fflush(stdin);
+}
+

@@ -17,7 +17,7 @@ int main()
     init();
     while(1)
     {
-        system("cls");
+        clear();
         SetConsoleTitle("医院管理系统");
         selector(4,"挂号管理","患者管理","医生管理","财务管理",recordManage,patientManage,docterManage,hospitalManage);
     }
@@ -30,4 +30,5 @@ int init()
     docters = listCreate();
     patients = listCreate();
     records = listCreate();
+    docterRead();
 }

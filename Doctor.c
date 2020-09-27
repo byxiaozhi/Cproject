@@ -12,65 +12,179 @@ const char *departments[27]= {"ÄÚ¿Æ","Íâ¿Æ","¶ù¿Æ","¸¾¿Æ","ÑÛ¿Æ","¶ú±Çºí¿Æ","¿ÚÇ
                               "ÆÕÍâ¿Æ","¹Ç¿Æ","Éñ¾­Íâ¿Æ","¸Îµ¨Íâ¿Æ","ÃÚÄòÍâ¿Æ","ÉÕÉË¿Æ","¸¾¿Æ","²ú¿Æ"
                              };
 
+void docterSave()
+{
+    FILE *fp=fopen("docters.dat", "w+");
+    for(int i=0; i<listSize(docters); i++)
+    {
+        docter *temp=listGet(docters,i);
+        fprintf(fp, "%d %s %d %d %d\n",temp->id,temp->name,temp->level,temp->department,temp->visitTime);
+    }
+    fclose(fp);
+}
+
+void docterRead()
+{
+    FILE *fp=fopen("docters.dat", "r");
+    if(!fp)
+    {
+        return;
+    }
+    docter *temp=(docter*)malloc(sizeof(docter));
+    while(fscanf(fp,"%d %s %d %d %d\n",&temp->id,temp->name,&temp->level,&temp->department,&temp->visitTime)==5)
+    {
+        listAddLast(docters,temp);
+        temp=(docter*)malloc(sizeof(docter));
+    }
+    free(temp);
+    fclose(fp);
+}
+
+void printVisitTime(int t)
+{
+    if(t & Mon)
+        printf("ÖÜÒ» ");
+    if(t & Tue)
+        printf("ÖÜ¶ş ");
+    if(t & Wed)
+        printf("ÖÜÈı ");
+    if(t & Thur)
+        printf("ÖÜËÄ ");
+    if(t & Fri)
+        printf("ÖÜÎå ");
+    if(t & Sat)
+        printf("ÖÜÁù ");
+    if(t & Sun)
+        printf("ÖÜÈÕ ");
+}
+
+char* getLevel(int i)
+{
+    if(i>=0 && i<sizeof(levels)/sizeof(char*))
+        return levels[i];
+    return "Î´Öª";
+}
+
+char* getDepartment(int i)
+{
+    if(i>=0 && i<sizeof(departments)/sizeof(char*))
+        return departments[i];
+    return "Î´Öª";
+}
+
 void docterAdd()
 {
     char comfirm;
     docter *temp=(docter*)malloc(sizeof(docter));
     SetConsoleTitle("Ôö¼ÓÒ½Éú");
 
-    system("cls");
+    clear();
     printf("ÇëÊäÈëĞÅÏ¢\n");
+
     printf("ÇëÊäÈë¹¤ºÅ£º");
     scanf("%d",&temp->id);
+
     printf("ÇëÊäÈëĞÕÃû£º");
     scanf("%s",&temp->name);
+
     for(int i=0; i<sizeof(levels)/sizeof(char*); i++)
         printf("%d.%s ",i,levels[i]);
     printf("\nÇëÑ¡Ôñ¼¶±ğ£º");
     scanf("%d",&temp->level);
+
     for(int i=0; i<sizeof(departments)/sizeof(char*); i++)
         printf("%d.%s ",i,departments[i]);
     printf("\nÇëÑ¡Ôñ¿ÆÊÒ£º");
     scanf("%d",&temp->department);
 
-    fflush(stdin);
-    system("cls");
+    printf("ÇëÊäÈë³öÕïÊ±¼ä£¨¸ñÊ½Èç1234567£©£º");
+    int time;
+    temp->visitTime=0;
+    scanf("%d",&time);
+    while(time)
+    {
+        if(time%10 >=1 && time%10<=7)
+            temp->visitTime|=1<<(time%10);
+        time/=10;
+    }
+
+    clear();
     printf("ÇëÑéÖ¤ĞÅÏ¢\n");
-    printf("¹¤ºÅ£º%d\nĞÕÃû£º%s\n¼¶±ğ£º%s\n¿ÆÊÒ£º%s\n",temp->id,temp->name,levels[temp->level],departments[temp->department]);
-    printf("ÇëÊäÈëyÈ·ÈÏ£¨Ä¬ÈÏÎªn£©£º");
+    printf("¹¤ºÅ£º%d\nĞÕÃû£º%s\n¼¶±ğ£º%s\n¿ÆÊÒ£º%s\n³öÕïÊ±¼ä£º",temp->id,temp->name,getLevel(temp->level),getDepartment(temp->department));
+    printVisitTime(temp->visitTime);
+
+    printf("\nÇëÊäÈëyÈ·ÈÏÌí¼Ó£¨Ä¬ÈÏÎªn£©£º");
     if(getchar()=='y')
     {
         listAddLast(docters,temp);
-        system("cls");
-        printf("Ìí¼Ó³É¹¦");
+        docterSave();
+        clear();
+        printf("Ìí¼Ó³É¹¦£¬");
+        system("pause");
     }
     else
     {
-        system("cls");
-        printf("²Ù×÷±»È¡Ïû");
+        clear();
         free(temp);
+        printf("²Ù×÷±»È¡Ïû£¬");
+        system("pause");
     }
-    Sleep(3000);
 }
 
 void docterDelete()
 {
+    int id,i;
+    docter *temp;
+    printf("ÇëÊäÈë¹¤ºÅ½øĞĞ²éÑ¯£º");
+    scanf("%d",&id);
+    for(i=0; i<listSize(docters); i++)
+    {
+        temp=listGet(docters,i);
+        if(temp->id==id)
+            break;
+    }
+    if(i==listSize(docters))
+    {
+        clear();
+        printf("Î´ÕÒµ½¸ÃÒ½Éú£¬");
+        system("pause");
+    }
+    else
+    {
+        printf("ÇëÑéÖ¤ĞÅÏ¢\n");
+        printf("¹¤ºÅ£º%d\nĞÕÃû£º%s\n¼¶±ğ£º%s\n¿ÆÊÒ£º%s\n³öÕïÊ±¼ä£º",temp->id,temp->name,getLevel(temp->level),getDepartment(temp->department));
+        printVisitTime(temp->visitTime);
 
-
+        printf("\nÇëÊäÈëyÈ·ÈÏÉ¾³ı£¨Ä¬ÈÏÎªn£©£º");
+        if(getchar()=='y')
+        {
+            listRemove(docters,i);
+            docterSave();
+            clear();
+            printf("É¾³ı³É¹¦£¬");
+            system("pause");
+        }
+        else
+        {
+            clear();
+            printf("²Ù×÷±»È¡Ïû£¬");
+            system("pause");
+        }
+    }
 }
 
 void docterList()
 {
-    system("cls");
+    clear();
+    printf("%-10s %-12s %-12s %-12s%s\n","¹¤ºÅ","ĞÕÃû","¼¶±ğ","¿ÆÊÒ","³öÕïÊ±¼ä");
     for(int i=0; i<listSize(docters); i++)
     {
         docter *temp=listGet(docters,i);
-        printf("%-10s %-10s %-10s %-10s\n","¹¤ºÅ","ĞÕÃû","¼¶±ğ","¿ÆÊÒ");
-        printf("%-10d %-10s %-10s %-10s\n",temp->id,temp->name,levels[temp->level],departments[temp->department]);
+        printf("%-10d %-12s %-12s %-12s",temp->id,temp->name,getLevel(temp->level),getDepartment(temp->department));
+        printVisitTime(temp->visitTime);
+        printf("\n");
     }
-    printf("\n°´ÈÎÒâ¼ü·µ»Ø...");
-    fflush(stdin);
-    getchar();
+    system("pause");
 }
 
 void docterInfo()
@@ -82,7 +196,7 @@ void docterManage()
 {
     do
     {
-        system("cls");
+        clear();
         SetConsoleTitle("Ò½Éú¹ÜÀí");
     }
     while(selector(5,"Ôö¼ÓÒ½Éú","É¾³ıÒ½Éú","ÁĞ³öËùÓĞÒ½Éú","²éÑ¯Ò½ÉúĞÅÏ¢","·µ»Ø",docterAdd,docterDelete,docterList,docterInfo,NULL)!=5);
