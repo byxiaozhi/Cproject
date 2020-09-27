@@ -1,12 +1,11 @@
 #include "Record.h"
 #include "windows.h"
-const char *types[3]= {"检查","开药","住院"};
 void recordManage()
 {
     do
     {
         system("cls");
-        SetConsoleTitle("挂号管理");
+        SetConsoleTitle("诊疗信息管理");
     }
-    while(selector(5,"功能一","功能二","功能三","功能四","返回",NULL,NULL,NULL,NULL,NULL)!=5);
+    while(selector(5,"新建挂号","检查","开药","住院","记录查询","返回",NULL,NULL,NULL,NULL,NULL)!=6);
 }

@@ -2,6 +2,7 @@
 #include "stdarg.h"
 #include "stdio.h"
 
+//菜单选择器
 int selector(int args, ...)
 {
     void *parameter;
@@ -13,7 +14,7 @@ int selector(int args, ...)
     for (int i = 1; i <= args; i++)
     {
         parameter = va_arg(vl, void*);
-        printf("  %d.%s\n", i, parameter);
+        printf("  %d.%s\n\n", i, parameter);
     }
     printf("  请选择：");
     scanf("%d",&select);
@@ -29,17 +30,52 @@ int selector(int args, ...)
 }
 
 
-
-char weekDayCount(int year, int month, int day)
+//计算这一年已经过的天数
+int dayCount(int year,int month,int day)
 {
-    int weekday = 0;
-    if ((month == 1) || (month == 2))
+    int sum = 0;
+    switch(month)
     {
-        month += 12;
-        year--;
+    case 1:
+        sum = day;
+        break;
+    case 2:
+        sum = 31 + day;
+        break;
+    case 3:
+        sum = 59 + day;
+        break;
+    case 4:
+        sum = 90 + day;
+        break;
+    case 5:
+        sum = 120 + day;
+        break;
+    case 6:
+        sum = 151 + day;
+        break;
+    case 7:
+        sum = 181 + day;
+        break;
+    case 8:
+        sum = 212 + day;
+        break;
+    case 9:
+        sum = 243 + day;
+        break;
+    case 10:
+        sum = 273 + day;
+        break;
+    case 11:
+        sum = 304 + day;
+        break;
+    case 12:
+        sum = 334 + day;
+        break;
     }
-    weekday = (day + 2 * month + 3 * (month + 1) / 5 + year + year / 4 - year / 100 + year / 400) % 7 + 1;
-    return weekday;
+    if(month > 2 && ((year % 4 == 0) && (year % 100 !=0) || (year % 400) == 0))
+        sum++;
+    return sum;
 }
 
 void clear()

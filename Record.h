@@ -1,26 +1,35 @@
 #pragma once
 #include "DataHandler.h"
-typedef struct{
-    char patientId[100];//患者身份证
-    int docterId;//医生工号
-    int dateTime[4];//时间，储存结构为月、日、时、分
-    int type;//记录类型
-    void* data;//记录内容
-}record;
-
 //检查、开药相当于购买类型，住院相当于租用类型
-//购买类型
-typedef struct {
-    char name[100];//商品名称
-    int price;//金额，单位为分
-}record_buy;
 
-//租用类型
 typedef struct {
-    int startDateTime[4];//开始租用时间
-    int endDateTime[4];//结束租用时间
+    char name[100];//检查名称
+    int price;//价格，单位为分
+}record_check;
+
+typedef struct {
+    char name[100];//药品名称
+    int num;//药品数量
+    int price;//单价，单位为分
+}record_medicine;
+
+typedef struct {
+    int startDateTime[4];//开始住院时间
+    int endDateTime[4];//结束住院时间
     int deposit;//押金，单位为分
 }record_hospitalized;
 
+typedef struct{
+    int id;//挂号id
+    char patientId[100];//患者身份证
+    int docterId;//医生工号
+    int dateTime[4];//时间，储存结构为月、日、时、分
+    int registeredOnly;//是否仅仅挂号
+    int Bill_check;//检查价格
+    int Bill_medicine;//药物花费
+    record_check data_check[100];
+    record_medicine data_medicine[100];
+    record_hospitalized record_hospitalized;
+}record;
 
 node* records;

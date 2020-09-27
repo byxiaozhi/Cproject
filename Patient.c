@@ -11,7 +11,7 @@ void patientSave()
     for(int i=0; i<listSize(patients); i++)
     {
         patient *temp=listGet(patients,i);
-        fprintf(fp, "%s %s %d\n",temp->name,temp->id,temp->age);
+        fprintf(fp, "%s %s %d %d %d %d %d %d\n",temp->name,temp->id,temp->age,temp->bill_all,temp->bill_check,temp->bill_medicine,temp->bill_hospitalized,temp->deposit);
     }
 
     fclose(fp);
@@ -26,7 +26,7 @@ void patientRead()
         return;
     }
     patient *temp=(patient*)malloc(sizeof(patient));
-    while(fscanf(fp,"%s %s %d\n",temp->name,temp->id,&temp->age)==3)
+    while(fscanf(fp,"%s %s %d %d %d %d %d %d\n",temp->name,temp->id,&temp->age,&temp->bill_all,&temp->bill_check,&temp->bill_medicine,&temp->bill_hospitalized,&temp->deposit)==8)
     {
         listAddLast(patients,temp);
         temp=(patient*)malloc(sizeof(patient));
@@ -108,7 +108,7 @@ void patientDelete()
     {
         clear();
         printf("请验证信息\n");
-        printf("姓名：%s\n身份证号：%s\n年龄：%d",temp->name,temp->id,temp->age);
+        printf("姓名：%s\n身份证号：%s\n年龄：%d\n检查账单：%d\n开药账单：%d\n住院账单：%d\n总账单：%d\n剩余押金：%d",temp->name,temp->id,temp->age,temp->bill_all,temp->bill_check,temp->bill_medicine,temp->bill_hospitalized,temp->deposit);
 
         printf("\n请输入y确认删除（默认为n）：");
         if(getchar()=='y')
@@ -131,11 +131,11 @@ void patientDelete()
 void patientList()
 {
     clear();
-    printf("%-12s %-12s %-12s\n","姓名","身份证号","年龄");
+    printf("%-12s %-12s %-12s %-12s %-12s %-12s %-12s %-12s\n","姓名","身份证号","年龄","检查账单","开药账单","住院账单","总账单","剩余押金");
     for(int i=0; i<listSize(patients); i++)
     {
         patient *temp=listGet(patients,i);
-        printf("%-12s %-12s %-12d\n",temp->name,temp->id,temp->age);
+        printf("%-12s %-12s %-12d %-12d %-12d %-12d %-12d %-12d\n",temp->name,temp->id,temp->age,temp->bill_all,temp->bill_check,temp->bill_medicine,temp->bill_hospitalized,temp->deposit);
     }
     system("pause");
 }
@@ -144,8 +144,6 @@ void PatientInfo()
 {
 
 }
-
-
 
 void patientManage()
 {
