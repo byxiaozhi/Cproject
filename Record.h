@@ -1,5 +1,6 @@
 #pragma once
 #include "DataHandler.h"
+#include "stdbool.h"
 //检查、开药相当于购买类型，住院相当于租用类型
 
 typedef struct {
@@ -22,14 +23,15 @@ typedef struct {
 typedef struct{
     int id;//挂号id
     char patientId[100];//患者身份证
-    int docterId;//医生工号
+    bool docterId;//医生工号
     int dateTime[4];//时间，储存结构为月、日、时、分
     int registeredOnly;//是否仅仅挂号
     int Bill_check;//检查价格
     int Bill_medicine;//药物花费
-    record_check data_check[100];
-    record_medicine data_medicine[100];
-    record_hospitalized record_hospitalized;
+    node* data_check;//检查
+    node* data_medicine;//开药
+    record_hospitalized record_hospitalized;//住院
 }record;
 
 node* records;
+int patientSelect();

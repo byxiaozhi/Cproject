@@ -12,3 +12,4 @@ typedef struct {
 }patient;
 
 node* patients;
+int patientSelector();

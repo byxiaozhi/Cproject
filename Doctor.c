@@ -131,6 +131,42 @@ void docterAdd()
     }
 }
 
+int docterSelector()
+{
+    char comfirm;
+    int i,d;
+    SetConsoleTitle("选择医生");
+    clear();
+    for(int i=0; i<sizeof(departments)/sizeof(char*); i++)
+        printf("  %d.%s\n",i,departments[i]);
+    printf("\n请选择科室：");
+    scanf("%d",&d);
+    printf("\n%-10s %-12s %-12s %-12s%s\n","工号","姓名","级别","科室","出诊时间");
+    for(int i=0; i<listSize(docters); i++)
+    {
+        docter *temp=listGet(docters,i);
+        if(d==temp->department)
+        {
+            printf("%-10d %-12s %-12s %-12s",temp->id,temp->name,getLevel(temp->level),getDepartment(temp->department));
+            printVisitTime(temp->visitTime);
+            printf("\n");
+        }
+    }
+    printf("\n请输入工号以确认医生：");
+    int id;
+    scanf("%d",&id);
+    for(i=0; i<listSize(docters); i++)
+    {
+        docter *temp=listGet(docters,i);
+        if(temp->id==id)
+            return i;
+    }
+    clear();
+    printf("未找到该医生，");
+    system("pause");
+    return -1;
+}
+
 void docterDelete()
 {
     int id,i;

@@ -1,8 +1,9 @@
 #include "Patient.h"
 #include "windows.h"
 #include "stdio.h"
-
-
+#include "stdbool.h"
+#include "string.h"
+#include "Utils.h"
 
 
 void patientSave()
@@ -37,9 +38,8 @@ void patientRead()
 }
 
 
-void patientAdd()
+bool patientAdd()
 {
-    char comfirm;
     patient *temp=(patient*)malloc(sizeof(patient));
     SetConsoleTitle("增加患者");
 
@@ -60,8 +60,6 @@ void patientAdd()
     temp->bill_medicine=0;
     temp->deposit=0;
 
-
-
     clear();
     printf("请验证信息\n");
     printf("姓名：%s\n身份证号：%s\n年龄：%d",temp->name,temp->id,temp->age);
@@ -74,6 +72,7 @@ void patientAdd()
         clear();
         printf("添加成功，");
         system("pause");
+        return true;
     }
     else
     {
@@ -81,7 +80,51 @@ void patientAdd()
         free(temp);
         printf("操作被取消，");
         system("pause");
+        return false;
     }
+}
+
+int patientSelector()
+{
+    SetConsoleTitle("选择患者");
+    clear();
+
+    int select = selector(3,"添加新患者","选择已有患者","取消挂号",NULL,NULL,NULL);
+    switch(select)
+    {
+    case 1:
+        if(patientAdd())
+            return listSize(patients)-1;
+        break;
+    case 2:
+        clear();
+        printf("请输入患者姓名以检索：");
+        char name[100];
+        int i;
+        scanf("%s",name);
+        printf("\n%-12s %-12s %-12s %-12s %-12s %-12s %-12s %-12s\n","姓名","身份证号","年龄","检查账单","开药账单","住院账单","总账单","剩余押金");
+        for(i=0; i<listSize(patients); i++)
+        {
+            patient *temp=listGet(patients,i);
+            if(strstr(temp->name,name))
+                printf("%-12s %-12s %-12d %-12d %-12d %-12d %-12d %-12d\n",temp->name,temp->id,temp->age,temp->bill_all,temp->bill_check,temp->bill_medicine,temp->bill_hospitalized,temp->deposit);
+        }
+        printf("\n请输入身份证号以确认患者：");
+        char id[100];
+        scanf("%s",id);
+
+        for(i=0; i<listSize(patients); i++)
+        {
+            patient *temp=listGet(patients,i);
+            if(strcmp(temp->id,id)==0)
+                return i;
+        }
+        clear();
+        printf("未找到该患者，");
+        system("pause");
+        break;
+    }
+    return -1;
 }
 
 void patientDelete()

@@ -19,9 +19,9 @@ int selector(int args, ...)
     }
     printf("  ÇëÑ¡Ôñ£º");
     scanf("%d",&select);
-    if(select>0 && select<=args)
+    if(select > 0 && select <= args)
     {
-        for(int i=0; i<select; i++)
+        for(int i = 0; i < select; i++)
             parameter = va_arg(vl, void*);
         if(parameter)
             (*(void(*)(void))(parameter))();
