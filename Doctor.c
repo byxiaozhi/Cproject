@@ -135,6 +135,7 @@ void docterDelete()
 {
     int id,i;
     docter *temp;
+    clear();
     printf("请输入工号进行查询：");
     scanf("%d",&id);
     for(i=0; i<listSize(docters); i++)
@@ -151,6 +152,7 @@ void docterDelete()
     }
     else
     {
+        clear();
         printf("请验证信息\n");
         printf("工号：%d\n姓名：%s\n级别：%s\n科室：%s\n出诊时间：",temp->id,temp->name,getLevel(temp->level),getDepartment(temp->department));
         printVisitTime(temp->visitTime);
