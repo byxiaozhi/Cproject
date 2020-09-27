@@ -1,5 +1,6 @@
 #include "Doctor.h"
 #include "stdlib.h"
+#include "stdio.h"
 #include "windows.h"
 
 //¼¶±ğ
@@ -13,9 +14,43 @@ const char *departments[27]= {"ÄÚ¿Æ","Íâ¿Æ","¶ù¿Æ","¸¾¿Æ","ÑÛ¿Æ","¶ú±Çºí¿Æ","¿ÚÇ
 
 void docterAdd()
 {
-    int select;
-    printf("Ìí¼ÓÒ½Éú");
-    scanf("%d",&select);
+    char comfirm;
+    docter *temp=(docter*)malloc(sizeof(docter));
+    SetConsoleTitle("Ôö¼ÓÒ½Éú");
+
+    system("cls");
+    printf("ÇëÊäÈëĞÅÏ¢\n");
+    printf("ÇëÊäÈë¹¤ºÅ£º");
+    scanf("%d",&temp->id);
+    printf("ÇëÊäÈëĞÕÃû£º");
+    scanf("%s",&temp->name);
+    for(int i=0; i<sizeof(levels)/sizeof(char*); i++)
+        printf("%d.%s ",i,levels[i]);
+    printf("\nÇëÑ¡Ôñ¼¶±ğ£º");
+    scanf("%d",&temp->level);
+    for(int i=0; i<sizeof(departments)/sizeof(char*); i++)
+        printf("%d.%s ",i,departments[i]);
+    printf("\nÇëÑ¡Ôñ¿ÆÊÒ£º");
+    scanf("%d",&temp->department);
+
+    fflush(stdin);
+    system("cls");
+    printf("ÇëÑéÖ¤ĞÅÏ¢\n");
+    printf("¹¤ºÅ£º%d\nĞÕÃû£º%s\n¼¶±ğ£º%s\n¿ÆÊÒ£º%s\n",temp->id,temp->name,levels[temp->level],departments[temp->department]);
+    printf("ÇëÊäÈëyÈ·ÈÏ£¨Ä¬ÈÏÎªn£©£º");
+    if(getchar()=='y')
+    {
+        listAddLast(docters,temp);
+        system("cls");
+        printf("Ìí¼Ó³É¹¦");
+    }
+    else
+    {
+        system("cls");
+        printf("²Ù×÷±»È¡Ïû");
+        free(temp);
+    }
+    Sleep(3000);
 }
 
 void docterDelete()
@@ -26,13 +61,20 @@ void docterDelete()
 
 void docterList()
 {
-
-
+    system("cls");
+    for(int i=0; i<listSize(docters); i++)
+    {
+        docter *temp=listGet(docters,i);
+        printf("%-10s %-10s %-10s %-10s\n","¹¤ºÅ","ĞÕÃû","¼¶±ğ","¿ÆÊÒ");
+        printf("%-10d %-10s %-10s %-10s\n",temp->id,temp->name,levels[temp->level],departments[temp->department]);
+    }
+    printf("\n°´ÈÎÒâ¼ü·µ»Ø...");
+    fflush(stdin);
+    getchar();
 }
 
 void docterInfo()
 {
-
 
 }
 

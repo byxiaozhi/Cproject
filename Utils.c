@@ -1,5 +1,6 @@
 #include "utils.h"
 #include "stdarg.h"
+#include "stdio.h"
 
 int selector(int args, ...)
 {
@@ -7,7 +8,8 @@ int selector(int args, ...)
     int select;
     va_list vl;
     va_start(vl,args);
-    printf("\n  ²Ëµ¥\n");
+    printf("\n");
+    fflush(stdin);
     for (int i = 1; i <= args; i++)
     {
         parameter = va_arg(vl, void*);
