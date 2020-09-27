@@ -31,4 +31,5 @@ int init()
     patients = listCreate();
     records = listCreate();
     docterRead();
+    patientRead();
 }

@@ -85,7 +85,7 @@ void docterAdd()
     scanf("%d",&temp->id);
 
     printf("ÇëÊäÈëÐÕÃû£º");
-    scanf("%s",&temp->name);
+    scanf("%s",temp->name);
 
     for(int i=0; i<sizeof(levels)/sizeof(char*); i++)
         printf("%d.%s ",i,levels[i]);

@@ -1,6 +1,6 @@
 #include "Record.h"
 #include "windows.h"
-
+const char *types[3]= {"检查","开药","住院"};
 void recordManage()
 {
     do
