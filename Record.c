@@ -30,6 +30,7 @@ void recordSave()
             record_medicine *medicine = listGet(temp->data_medicine,i);
             fprintf(fp,"%s %d %d ",medicine->name,medicine->price,medicine->num);
         }
+        fprintf(fp,"\n");
     }
     fclose(fp);
     hospitalSave();
@@ -272,6 +273,7 @@ void recordRegister()
     }
     if(t2>=1)
     {
+        clear();
         printf("\n  患者今天已经在这个科室挂过号，无法再挂号，");
         system("pause");
         return;
@@ -606,6 +608,7 @@ void recordListAll()
         printf("  %-10d %-12s %-12s %-12s %-12.2f %-12.2f %-12.2f %-12.2f",
                temp->id,temp2->name,getDepartment(temp3->department),temp3->name,
                temp->bill_check/100.0,temp->bill_medicine/100.0,temp->bill_hospitalized/100.0,temp->data_hospitalized.deposit/100.0);
+        printf("%d",temp->docterId);
         printf("\n");
     }
     printf("\n  ");

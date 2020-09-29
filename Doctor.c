@@ -129,12 +129,19 @@ void docterAdd()
         system("pause");
         return;
     }
+    if(temp->level<0 || temp->level>=sizeof(levels)/sizeof(char*)){
+        free(temp);
+        printf("\n  该科室不存在，");
+        system("pause");
+        return;
+    }
     if(temp->department<0 || temp->department>=sizeof(departments)/sizeof(char*)){
         free(temp);
         printf("\n  该科室不存在，");
         system("pause");
         return;
     }
+
 
 
     printf("\n  请验证信息\n\n");
