@@ -129,6 +129,12 @@ void docterAdd()
         system("pause");
         return;
     }
+    if(temp->department<0 || temp->department>=sizeof(departments)/sizeof(char*)){
+        free(temp);
+        printf("\n  该科室不存在，");
+        system("pause");
+        return;
+    }
 
 
     printf("\n  请验证信息\n\n");
@@ -175,10 +181,11 @@ int docterSelector()
     if(d==-1)
     {
         clear();
-        printf("  未找到该科室，");
+        printf("\n  未找到该科室，");
         system("pause");
         return -1;
     }
+    clear();
     printf("\n  %-10s %-12s %-12s %-12s%s\n","工号","姓名","级别","科室","出诊时间");
     for(int i=0; i<listSize(docters); i++)
     {

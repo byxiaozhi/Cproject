@@ -55,15 +55,15 @@ bool patientAdd()
 {
     patient *temp=(patient*)malloc(sizeof(patient));
     SetConsoleTitle("增加患者");
-    printf("请输入信息\n");
+    printf("\n  请输入信息\n\n");
 
-    printf("请输入姓名：");
+    printf("  请输入姓名：");
     scanf("%s",temp->name);
 
-    printf("请输入身份证号：");
+    printf("  请输入身份证号：");
     scanf("%s",temp->id);
 
-    printf("请输入年龄：");
+    printf("  请输入年龄：");
     scanf("%d",&temp->age);
 
     temp->bill_all=0;
@@ -75,20 +75,20 @@ bool patientAdd()
     if(patientGetById(temp->id)!=-1)
     {
         free(temp);
-        printf("该患者已存在，");
+        printf("\n  该患者已存在，");
         system("pause");
         return false;
     }
-    printf("请验证信息\n");
-    printf("姓名：%s\n身份证号：%s\n年龄：%d",temp->name,temp->id,temp->age);
+    printf("\n  请验证信息\n\n");
+    printf("  姓名：%s\n  身份证号：%s\n  年龄：%d",temp->name,temp->id,temp->age);
 
-    printf("\n请输入y确认添加（默认为n）：");
+    printf("\n\n  请输入y确认添加（默认为n）：");
     if(getchar()=='y')
     {
         listAddLast(patients,temp);
         patientSave();
         clear();
-        printf("添加成功，");
+        printf("\n  添加成功，");
         system("pause");
         return true;
     }
@@ -96,7 +96,7 @@ bool patientAdd()
     {
         clear();
         free(temp);
-        printf("操作被取消，");
+        printf("\n  操作被取消，");
         system("pause");
         return false;
     }
@@ -123,25 +123,25 @@ int patientSelector(bool allowAdd)
         break;
     case 2:
         clear();
-        printf("请输入患者姓名以检索：");
+        printf("\n  请输入患者姓名以检索：");
         char name[100];
         int i;
         scanf("%s",name);
-        printf("\n%-12s %-12s %-12s %-12s %-12s %-12s %-12s %-12s\n","姓名","身份证号","年龄","检查账单","开药账单","住院账单","总账单","剩余押金");
+        printf("\n  %-12s %-12s %-12s %-12s %-12s %-12s %-12s %-12s\n","姓名","身份证号","年龄","检查账单","开药账单","住院账单","总账单","剩余押金");
         for(i=0; i<listSize(patients); i++)
         {
             patient *temp=listGet(patients,i);
             if(strstr(temp->name,name))
-                printf("%-12s %-12s %-12d %-12.2f %-12.2f %-12.2f %-12.2f %-12.2f\n",temp->name,temp->id,temp->age,temp->bill_check/100.0,temp->bill_medicine/100.0,temp->bill_hospitalized/100.0,temp->bill_all/100.0,temp->deposit/100.0);
+                printf("  %-12s %-12s %-12d %-12.2f %-12.2f %-12.2f %-12.2f %-12.2f\n",temp->name,temp->id,temp->age,temp->bill_check/100.0,temp->bill_medicine/100.0,temp->bill_hospitalized/100.0,temp->bill_all/100.0,temp->deposit/100.0);
         }
-        printf("\n请输入身份证号以确认患者：");
+        printf("\n  请输入身份证号以确认患者：");
         char id[100];
         scanf("%s",id);
         int r = patientGetById(id);
         clear();
         if(r!=-1)
             return r;
-        printf("未找到该患者，");
+        printf("\n  未找到该患者，");
         system("pause");
         break;
     }
@@ -154,13 +154,13 @@ void patientDelete()
     int i;
     patient *temp;
     SetConsoleTitle("删除患者");
-    printf("请输入身份证进行查询：");
+    printf("\n  请输入身份证进行查询：");
     scanf("%s",id);
     i = patientGetById(id);
     if(i==-1)
     {
         clear();
-        printf("未找到该患者，");
+        printf("\n  未找到该患者，");
         system("pause");
     }
     else
@@ -173,28 +173,28 @@ void patientDelete()
             record *t=listGet(records,i);
             if(strcmp(temp->id,t->patientId)==0)
             {
-                printf("该患者还存在医疗记录，无法删除");
+                printf("\n  该患者还存在医疗记录，无法删除");
                 system("pause");
                 return;
             }
         }
 
-        printf("请验证信息\n");
-        printf("姓名：%s\n身份证号：%s\n年龄：%d\n检查账单：%d\n开药账单：%d\n住院账单：%d\n总账单：%d\n剩余押金：%d",temp->name,temp->id,temp->age,temp->bill_check,temp->bill_medicine,temp->bill_hospitalized,temp->bill_all,temp->deposit);
+        printf("\n  请验证信息\n");
+        printf("  姓名：%s\n  身份证号：%s\n  年龄：%d\n  检查账单：%d\n  开药账单：%d\n  住院账单：%d\n  总账单：%d\n  剩余押金：%d",temp->name,temp->id,temp->age,temp->bill_check,temp->bill_medicine,temp->bill_hospitalized,temp->bill_all,temp->deposit);
 
-        printf("\n请输入y确认删除（默认为n）：");
+        printf("\n\n  请输入y确认删除（默认为n）：");
         if(getchar()=='y')
         {
             listRemove(patients,i);
             patientSave();
             clear();
-            printf("删除成功，");
+            printf("\n  删除成功，");
             system("pause");
         }
         else
         {
             clear();
-            printf("操作被取消，");
+            printf("\n  操作被取消，");
             system("pause");
         }
     }
@@ -202,12 +202,13 @@ void patientDelete()
 
 void patientList()
 {
-    printf("%-12s %-12s %-12s %-12s %-12s %-12s %-12s %-12s\n","姓名","身份证号","年龄","检查账单","开药账单","住院账单","总账单","剩余押金");
+    printf("\n  %-12s %-12s %-12s %-12s %-12s %-12s %-12s %-12s\n","姓名","身份证号","年龄","检查账单","开药账单","住院账单","总账单","剩余押金");
     for(int i=0; i<listSize(patients); i++)
     {
         patient *temp=listGet(patients,i);
-        printf("%-12s %-12s %-12d %-12.2f %-12.2f %-12.2f %-12.2f %-12.2f\n",temp->name,temp->id,temp->age,temp->bill_check/100.0,temp->bill_medicine/100.0,temp->bill_hospitalized/100.0,temp->bill_all/100.0,temp->deposit/100.0);
+        printf("  %-12s %-12s %-12d %-12.2f %-12.2f %-12.2f %-12.2f %-12.2f\n",temp->name,temp->id,temp->age,temp->bill_check/100.0,temp->bill_medicine/100.0,temp->bill_hospitalized/100.0,temp->bill_all/100.0,temp->deposit/100.0);
     }
+    printf("\n  ");
     system("pause");
 }
 
@@ -217,21 +218,21 @@ void patientInfo()
     int i;
     patient *temp;
     SetConsoleTitle("查询患者信息");
-    printf("请输入身份证进行查询：");
+    printf("\n  请输入身份证进行查询：");
     scanf("%s",id);
     i = patientGetById(id);
     if(i==-1)
     {
         clear();
-        printf("未找到该患者，");
+        printf("\n  未找到该患者，");
         system("pause");
     }
     else
     {
         clear();
         temp=listGet(patients,i);
-        printf("姓名：%s\n身份证号：%s\n年龄：%d\n检查账单：%.2f\n开药账单：%.2f\n住院账单：%.2f\n总账单：%.2f\n剩余押金：%.2f",temp->name,temp->id,temp->age,temp->bill_check/100.0,temp->bill_medicine/100.0,temp->bill_hospitalized/100.0,temp->bill_all/100.0,temp->deposit/100.0);
-        printf("\n\n");
+        printf("\n  姓名：%s\n  身份证号：%s\n  年龄：%d\n  检查账单：%.2f\n  开药账单：%.2f\n  住院账单：%.2f\n  总账单：%.2f\n  剩余押金：%.2f",temp->name,temp->id,temp->age,temp->bill_check/100.0,temp->bill_medicine/100.0,temp->bill_hospitalized/100.0,temp->bill_all/100.0,temp->deposit/100.0);
+        printf("\n\n  ");
         system("pause");
     }
 }
