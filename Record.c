@@ -34,7 +34,6 @@ void recordSave()
     fclose(fp);
     hospitalSave();
     patientSave();
-    docterSave();
 }
 
 void recordRead()
@@ -76,6 +75,7 @@ void recordRead()
     fclose(fp);
 }
 
+//记录检查金额变化
 void recordChangeCheck(int index,int money)
 {
     record *temp = listGet(records,index);
@@ -88,6 +88,7 @@ void recordChangeCheck(int index,int money)
     turnover_check+=money;
 }
 
+//记录药物金额变化
 void recordChangeMedicine(int index,int money)
 {
     record *temp = listGet(records,index);
@@ -100,6 +101,7 @@ void recordChangeMedicine(int index,int money)
     turnover_medicine+=money;
 }
 
+//记录住院金额变化
 void recordChangeHospitalized(int index,int money)
 {
     record *temp = listGet(records,index);
@@ -138,6 +140,20 @@ int recordGetPriceOfMedicine(int index)
     {
         record_medicine *medicine=listGet(medicines,i);
         total+=medicine->price*medicine->num;
+    }
+    return total;
+}
+
+//获取挂号药物数量，参数为挂号储存索引
+int recordGetCountOfMedicine(int index)
+{
+    record *temp = listGet(records,index);
+    node *medicines = temp->data_medicine;
+    int i,total=0;
+    for(i=0; i<listSize(medicines); i++)
+    {
+        record_medicine *medicine=listGet(medicines,i);
+        total+=medicine->num;
     }
     return total;
 }
@@ -193,6 +209,7 @@ int recordGetByUser()
 void recordRegister()
 {
     int t1=0,t2=0;
+    timeFlush();
     //检查今天医院是否挂号超过500
     for(int i=0; i<listSize(records); i++)
     {
@@ -214,10 +231,11 @@ void recordRegister()
     patient *p = listGet(patients,pi);
 
     //检查患者是否挂号超过5个
+    t1=0;
     for(int i=0; i<listSize(records); i++)
     {
         record *t=listGet(records,i);
-        if(t->dateTime.day==nowTime.day && strcmp(t->patientId,p->id))
+        if(t->dateTime.day==nowTime.day && strcmp(t->patientId,p->id)==0)
             t1++;
     }
     if(t1>=5)
@@ -241,9 +259,10 @@ void recordRegister()
         if(t->dateTime.day==nowTime.day && d->id==t->docterId)
             t1++;
         docter *td=listGet(docters,docterGetById(t->docterId));
-        if(t->dateTime.day==nowTime.day && strcmp(t->patientId,p->id) && td->department==d->department)
+        if(t->dateTime.day==nowTime.day && strcmp(t->patientId,p->id)==0 && td->department==d->department)
             t2++;
     }
+
     if(t1>=20)
     {
         clear();
@@ -254,6 +273,13 @@ void recordRegister()
     if(t2>=1)
     {
         printf("\n  患者今天已经在这个科室挂过号，无法再挂号，");
+        system("pause");
+        return;
+    }
+    if(!(1<<weekCount(nowTime) & d->visitTime))
+    {
+        clear();
+        printf("\n  这个医生今天不出诊，无法挂号");
         system("pause");
         return;
     }
@@ -274,7 +300,6 @@ void recordRegister()
             temp->id = ((record*)listGet(records,listSize(records)-1))->id+1;
         else
             temp->id = 1;
-        timeFlush();
         temp->dateTime=nowTime;
         listAddLast(records,temp);
         recordSave();
@@ -393,6 +418,12 @@ void medicine()
             if(recordGetPriceOfMedicine(i)+medicine->price*medicine->num>10*10000*100)
             {
                 printf("\n  药品总价不能超过10万，");
+                system("pause");
+                continue;
+            }
+            if(recordGetCountOfMedicine(i)+medicine->num>100)
+            {
+                printf("\n  药品总数量一次不能超过 100 ，");
                 system("pause");
                 continue;
             }
