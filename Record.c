@@ -33,6 +33,8 @@ void recordSave()
     }
     fclose(fp);
     hospitalSave();
+    patientSave();
+    docterSave();
 }
 
 void recordRead()
@@ -81,6 +83,7 @@ void recordChangeCheck(int index,int money)
 
     temp->bill_check+=money;
     temp2->bill_check+=money;
+    temp2->bill_all+=money;
     turnover_all+=money;
     turnover_check+=money;
 }
@@ -92,6 +95,7 @@ void recordChangeMedicine(int index,int money)
 
     temp->bill_medicine+=money;
     temp2->bill_medicine+=money;
+    temp2->bill_all+=money;
     turnover_all+=money;
     turnover_medicine+=money;
 }
@@ -103,6 +107,7 @@ void recordChangeHospitalized(int index,int money)
 
     temp->bill_hospitalized+=money;
     temp2->bill_hospitalized+=money;
+    temp2->bill_all+=money;
     turnover_all+=money;
     turnover_hospitalized+=money;
 }
@@ -319,10 +324,11 @@ void check()
             float price;
             scanf("%f",&price);
             check->price = price*100;
-            if(recordGetPriceOfCheck(i)+check->price>10*10000*100){
-                    printf("\n检查总价不能超过10万，");
-                    system("pause");
-                    continue;
+            if(recordGetPriceOfCheck(i)+check->price>10*10000*100)
+            {
+                printf("\n检查总价不能超过10万，");
+                system("pause");
+                continue;
             }
 
             listAddLast(checks,check);
@@ -384,10 +390,11 @@ void medicine()
             medicine->price = price*100;
             printf("请输入药品数量：");
             scanf("%d",&medicine->num);
-            if(recordGetPriceOfMedicine(i)+medicine->price*medicine->num>10*10000*100){
-                    printf("\n药品总价不能超过10万，");
-                    system("pause");
-                    continue;
+            if(recordGetPriceOfMedicine(i)+medicine->price*medicine->num>10*10000*100)
+            {
+                printf("\n药品总价不能超过10万，");
+                system("pause");
+                continue;
             }
             listAddLast(medicines,medicine);
 
@@ -443,6 +450,7 @@ void hospitalized()
         return;
     SetConsoleTitle("住院");
     record *temp = listGet(records,i);
+    patient *p = listGet(patients,patientGetById(temp->patientId));
     if(temp->data_hospitalized.startTime.year==0)
     {
         time tempTime;
@@ -479,6 +487,8 @@ void hospitalized()
         {
             temp->data_hospitalized.startTime=nowTime;
             temp->data_hospitalized.deposit=deposit;
+            p->deposit+=deposit;
+
             clear();
             printf("确认成功，");
             system("pause");
@@ -515,6 +525,7 @@ void hospitalized()
                 if(select=='y')
                 {
                     temp->data_hospitalized.deposit+=money*10000;
+                    p->deposit+=money*10000;
                 }
                 select =0 ;
             }
@@ -535,6 +546,7 @@ void hospitalized()
                 if(select=='y')
                 {
                     recordChangeHospitalized(i,used);
+                    p->deposit-=temp->data_hospitalized.deposit;
                     temp->data_hospitalized.deposit=0;
                     temp->data_hospitalized.endTime=nowTime;
                     select = 3;

@@ -132,7 +132,7 @@ int patientSelector(bool allowAdd)
         {
             patient *temp=listGet(patients,i);
             if(strstr(temp->name,name))
-                printf("%-12s %-12s %-12d %-12d %-12d %-12d %-12d %-12d\n",temp->name,temp->id,temp->age,temp->bill_all,temp->bill_check,temp->bill_medicine,temp->bill_hospitalized,temp->deposit);
+                printf("%-12s %-12s %-12d %-12.2f %-12.2f %-12.2f %-12.2f %-12.2f\n",temp->name,temp->id,temp->age,temp->bill_check/100.0,temp->bill_medicine/100.0,temp->bill_hospitalized/100.0,temp->bill_all/100.0,temp->deposit/100.0);
         }
         printf("\n请输入身份证号以确认患者：");
         char id[100];
@@ -180,7 +180,7 @@ void patientDelete()
         }
 
         printf("请验证信息\n");
-        printf("姓名：%s\n身份证号：%s\n年龄：%d\n检查账单：%d\n开药账单：%d\n住院账单：%d\n总账单：%d\n剩余押金：%d",temp->name,temp->id,temp->age,temp->bill_all,temp->bill_check,temp->bill_medicine,temp->bill_hospitalized,temp->deposit);
+        printf("姓名：%s\n身份证号：%s\n年龄：%d\n检查账单：%d\n开药账单：%d\n住院账单：%d\n总账单：%d\n剩余押金：%d",temp->name,temp->id,temp->age,temp->bill_check,temp->bill_medicine,temp->bill_hospitalized,temp->bill_all,temp->deposit);
 
         printf("\n请输入y确认删除（默认为n）：");
         if(getchar()=='y')
@@ -206,7 +206,7 @@ void patientList()
     for(int i=0; i<listSize(patients); i++)
     {
         patient *temp=listGet(patients,i);
-        printf("%-12s %-12s %-12d %-12d %-12d %-12d %-12d %-12d\n",temp->name,temp->id,temp->age,temp->bill_all,temp->bill_check,temp->bill_medicine,temp->bill_hospitalized,temp->deposit);
+        printf("%-12s %-12s %-12d %-12.2f %-12.2f %-12.2f %-12.2f %-12.2f\n",temp->name,temp->id,temp->age,temp->bill_check/100.0,temp->bill_medicine/100.0,temp->bill_hospitalized/100.0,temp->bill_all/100.0,temp->deposit/100.0);
     }
     system("pause");
 }
@@ -230,7 +230,7 @@ void patientInfo()
     {
         clear();
         temp=listGet(patients,i);
-        printf("姓名：%s\n身份证号：%s\n年龄：%d\n检查账单：%d\n开药账单：%d\n住院账单：%d\n总账单：%d\n剩余押金：%d",temp->name,temp->id,temp->age,temp->bill_all,temp->bill_check,temp->bill_medicine,temp->bill_hospitalized,temp->deposit);
+        printf("姓名：%s\n身份证号：%s\n年龄：%d\n检查账单：%.2f\n开药账单：%.2f\n住院账单：%.2f\n总账单：%.2f\n剩余押金：%.2f",temp->name,temp->id,temp->age,temp->bill_check/100.0,temp->bill_medicine/100.0,temp->bill_hospitalized/100.0,temp->bill_all/100.0,temp->deposit/100.0);
         printf("\n\n");
         system("pause");
     }
