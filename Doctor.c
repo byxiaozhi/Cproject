@@ -3,6 +3,7 @@
 #include "stdio.h"
 #include "windows.h"
 
+void recordListByDocter();
 //级别
 const char *levels[4]= {"主任医师","副主任医师","主治医师","住院医师"};
 
@@ -38,6 +39,17 @@ void docterRead()
     }
     free(temp);
     fclose(fp);
+}
+
+int docterGetById(int id)
+{
+    for(int i=0; i<listSize(docters); i++)
+    {
+        docter *temp=listGet(docters,i);
+        if(temp->id==id)
+            return i;
+    }
+    return -1;
 }
 
 void printVisitTime(int t)
@@ -109,6 +121,15 @@ void docterAdd()
     }
 
     clear();
+    if(docterGetById(temp->id)!=-1)
+    {
+        free(temp);
+        printf("该医生已存在，");
+        system("pause");
+        return;
+    }
+
+
     printf("请验证信息\n");
     printf("工号：%d\n姓名：%s\n级别：%s\n科室：%s\n出诊时间：",temp->id,temp->name,getLevel(temp->level),getDepartment(temp->department));
     printVisitTime(temp->visitTime);
@@ -131,15 +152,17 @@ void docterAdd()
     }
 }
 
-int docterGetById(int id)
+int departmentSelector()
 {
-    for(int i=0; i<listSize(docters); i++)
-    {
-        docter *temp=listGet(docters,i);
-        if(temp->id==id)
-            return i;
-    }
-    return -1;
+    int d;
+    clear();
+    for(int i=0; i<sizeof(departments)/sizeof(char*); i++)
+        printf("  %d.%s\n",i,departments[i]);
+    printf("\n请选择科室：");
+    scanf("%d",&d);
+    if(d<0 || d>=sizeof(departments)/sizeof(char*))
+        return -1;
+    return d;
 }
 
 int docterSelector()
@@ -147,11 +170,14 @@ int docterSelector()
     char comfirm;
     int i,d;
     SetConsoleTitle("选择医生");
-    clear();
-    for(int i=0; i<sizeof(departments)/sizeof(char*); i++)
-        printf("  %d.%s\n",i,departments[i]);
-    printf("\n请选择科室：");
-    scanf("%d",&d);
+    d = departmentSelector();
+    if(d==-1)
+    {
+        clear();
+        printf("未找到该科室，");
+        system("pause");
+        return -1;
+    }
     printf("\n%-10s %-12s %-12s %-12s%s\n","工号","姓名","级别","科室","出诊时间");
     for(int i=0; i<listSize(docters); i++)
     {
@@ -229,11 +255,6 @@ void docterList()
     system("pause");
 }
 
-void docterInfo()
-{
-
-}
-
 void docterManage()
 {
     do
@@ -241,5 +262,5 @@ void docterManage()
         clear();
         SetConsoleTitle("医生管理");
     }
-    while(selector(5,"增加医生","删除医生","列出所有医生","查询医生信息","返回",docterAdd,docterDelete,docterList,docterInfo,NULL)!=5);
+    while(selector(5,"增加医生","删除医生","列出所有医生","查询医生信息","返回",docterAdd,docterDelete,docterList,recordListByDocter,NULL)!=5);
 }

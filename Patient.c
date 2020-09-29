@@ -4,6 +4,7 @@
 #include "stdbool.h"
 #include "string.h"
 #include "Utils.h"
+void recordListByPatient();
 
 
 void patientSave()
@@ -37,6 +38,17 @@ void patientRead()
     fclose(fp);
 }
 
+int patientGetById(char *id)
+{
+    for(int i=0; i<listSize(patients); i++)
+    {
+        patient *temp=listGet(patients,i);
+        if(strcmp(temp->id,id)==0)
+            return i;
+    }
+    return -1;
+}
+
 
 bool patientAdd()
 {
@@ -61,6 +73,13 @@ bool patientAdd()
     temp->deposit=0;
 
     clear();
+    if(patientGetById(temp->id)!=-1)
+    {
+        free(temp);
+        printf("该患者已存在，");
+        system("pause");
+        return false;
+    }
     printf("请验证信息\n");
     printf("姓名：%s\n身份证号：%s\n年龄：%d",temp->name,temp->id,temp->age);
 
@@ -84,23 +103,16 @@ bool patientAdd()
     }
 }
 
-int patientGetById(char *id)
-{
-    for(int i=0; i<listSize(patients); i++)
-    {
-        patient *temp=listGet(patients,i);
-        if(strcmp(temp->id,id)==0)
-            return i;
-    }
-    return -1;
-}
-
-int patientSelector()
+int patientSelector(bool allowAdd)
 {
     SetConsoleTitle("选择患者");
     clear();
-
-    int select = selector(3,"添加新患者","选择已有患者","取消挂号",NULL,NULL,NULL);
+    int select;
+    if(allowAdd){
+        select = selector(3,"添加新患者","选择已有患者","取消挂号",NULL,NULL,NULL);
+    }else{
+        select = 2;
+    }
     switch(select)
     {
     case 1:
@@ -186,11 +198,6 @@ void patientList()
     system("pause");
 }
 
-void PatientInfo()
-{
-
-}
-
 void patientManage()
 {
     do
@@ -198,5 +205,5 @@ void patientManage()
         clear();
         SetConsoleTitle("患者管理");
     }
-    while(selector(5,"增加患者","删除患者","列出所有患者","查询患者信息","返回",patientAdd,patientDelete,patientList,PatientInfo,NULL)!=5);
+    while(selector(5,"增加患者","删除患者","列出所有患者","查询患者信息","返回",patientAdd,patientDelete,patientList,recordListByPatient,NULL)!=5);
 }

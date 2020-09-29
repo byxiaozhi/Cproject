@@ -23,6 +23,11 @@ void hospitalManage()
     {
         system("cls");
         SetConsoleTitle("财务管理");
+        printf("\n  医院收入概览\n");
+        printf("  医院总收入：%.2f 元\n",turnover_all/100.0);
+        printf("  医院检查收入：%.2f 元\n",turnover_check/100.0);
+        printf("  医院药品收入：%.2f 元\n",turnover_medicine/100.0);
+        printf("  医院住院收入：%.2f 元\n",turnover_hospitalized/100.0);
     }
-    while(selector(5,"功能一","功能二","功能三","功能四","返回",NULL,NULL,NULL,NULL,NULL)!=5);
+    while(selector(2,"撤销诊疗信息","返回",NULL,NULL)!=2);
 }

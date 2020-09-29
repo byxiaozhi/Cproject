@@ -40,3 +40,5 @@ int patientSelect();
 int patientGetById(char *id);
 void recordSave();
 void recordRead();
+void recordListByPatient();
+void recordListByDocter();

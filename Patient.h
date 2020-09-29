@@ -12,6 +12,6 @@ typedef struct {
 }patient;
 
 node* patients;
-int patientSelector();
+int patientSelector(bool allowAdd);
 void patientSave();
 void patientRead();
