@@ -27,18 +27,18 @@ typedef struct{
     int docterId;//医生工号
     time dateTime;//时间，储存结构为月、日、时、分
     bool registeredOnly;//是否仅仅挂号
-    int Bill_check;//检查价格
-    int Bill_medicine;//药物花费
-    int Bill_hospitalized;//住院花费
+    int bill_check;//检查价格
+    int bill_medicine;//药物花费
+    int bill_hospitalized;//住院花费
     node* data_check;//检查
     node* data_medicine;//开药
     record_hospitalized data_hospitalized;//住院
 }record;
 
 node* records;
-int patientSelect();
-int patientGetById(char *id);
 void recordSave();
 void recordRead();
 void recordListByPatient();
 void recordListByDocter();
+int recordGetById(int id);
+bool recordRemove(int index,bool refund);

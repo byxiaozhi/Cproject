@@ -19,6 +19,7 @@ int selector(int args, ...)
     }
     printf("  请选择：");
     scanf("%d",&select);
+    clear();
     if(select > 0 && select <= args)
     {
         for(int i = 0; i < select; i++)
@@ -29,7 +30,6 @@ int selector(int args, ...)
     va_end(vl);
     return select;
 }
-
 
 //计算这一年已经过的天数
 int dayCount(time t)
@@ -79,10 +79,32 @@ int dayCount(time t)
     return sum;
 }
 
+//检查时间是否合法
+bool timeCheck(time t)
+{
+    bool ly = ((t.year % 4 == 0) && (t.year % 100 !=0)) || (t.year % 400) == 0;
+    if(t.month<1 || t.month>12)
+        return false;
+    if(t.day<1)
+        return false;
+    if(t.hour<0 || t.hour>23)
+        return false;
+    if(t.minute<0 || t.minute>59)
+        return false;
+    if((t.month == 1 || t.month == 3 || t.month == 5 || t.month == 7 || t.month == 8 || t.month == 10 || t.month == 12)&&t.month>31)
+        return false;
+    if((t.month == 2 || t.month==4 || t.month == 6 || t.month==9 || t.minute==11) && t.month>30)
+        return false;
+    if(!ly && t.month>28 || ly&& t.month>29)
+        return false;
+    return true;
+}
+
 //计算星期几
 int weekCount(time t)
 {
-    if(t.month == 1 || t.month == 2) {
+    if(t.month == 1 || t.month == 2)
+    {
         t.month += 12;
         t.year --;
     }

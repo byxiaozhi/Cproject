@@ -4,6 +4,7 @@
 #include "stdbool.h"
 #include "string.h"
 #include "Utils.h"
+#include "Record.h"
 void recordListByPatient();
 
 
@@ -54,8 +55,6 @@ bool patientAdd()
 {
     patient *temp=(patient*)malloc(sizeof(patient));
     SetConsoleTitle("增加患者");
-
-    clear();
     printf("请输入信息\n");
 
     printf("请输入姓名：");
@@ -108,9 +107,12 @@ int patientSelector(bool allowAdd)
     SetConsoleTitle("选择患者");
     clear();
     int select;
-    if(allowAdd){
+    if(allowAdd)
+    {
         select = selector(3,"添加新患者","选择已有患者","取消挂号",NULL,NULL,NULL);
-    }else{
+    }
+    else
+    {
         select = 2;
     }
     switch(select)
@@ -136,9 +138,9 @@ int patientSelector(bool allowAdd)
         char id[100];
         scanf("%s",id);
         int r = patientGetById(id);
+        clear();
         if(r!=-1)
             return r;
-        clear();
         printf("未找到该患者，");
         system("pause");
         break;
@@ -151,7 +153,7 @@ void patientDelete()
     char id[100];
     int i;
     patient *temp;
-    clear();
+    SetConsoleTitle("删除患者");
     printf("请输入身份证进行查询：");
     scanf("%s",id);
     i = patientGetById(id);
@@ -165,6 +167,18 @@ void patientDelete()
     {
         clear();
         temp=listGet(patients,i);
+
+        for(int i=0; i<listSize(records); i++)
+        {
+            record *t=listGet(records,i);
+            if(strcmp(temp->id,t->patientId)==0)
+            {
+                printf("该患者还存在医疗记录，无法删除");
+                system("pause");
+                return;
+            }
+        }
+
         printf("请验证信息\n");
         printf("姓名：%s\n身份证号：%s\n年龄：%d\n检查账单：%d\n开药账单：%d\n住院账单：%d\n总账单：%d\n剩余押金：%d",temp->name,temp->id,temp->age,temp->bill_all,temp->bill_check,temp->bill_medicine,temp->bill_hospitalized,temp->deposit);
 
@@ -188,7 +202,6 @@ void patientDelete()
 
 void patientList()
 {
-    clear();
     printf("%-12s %-12s %-12s %-12s %-12s %-12s %-12s %-12s\n","姓名","身份证号","年龄","检查账单","开药账单","住院账单","总账单","剩余押金");
     for(int i=0; i<listSize(patients); i++)
     {
@@ -198,6 +211,31 @@ void patientList()
     system("pause");
 }
 
+void patientInfo()
+{
+    char id[100];
+    int i;
+    patient *temp;
+    SetConsoleTitle("查询患者信息");
+    printf("请输入身份证进行查询：");
+    scanf("%s",id);
+    i = patientGetById(id);
+    if(i==-1)
+    {
+        clear();
+        printf("未找到该患者，");
+        system("pause");
+    }
+    else
+    {
+        clear();
+        temp=listGet(patients,i);
+        printf("姓名：%s\n身份证号：%s\n年龄：%d\n检查账单：%d\n开药账单：%d\n住院账单：%d\n总账单：%d\n剩余押金：%d",temp->name,temp->id,temp->age,temp->bill_all,temp->bill_check,temp->bill_medicine,temp->bill_hospitalized,temp->deposit);
+        printf("\n\n");
+        system("pause");
+    }
+}
+
 void patientManage()
 {
     do
@@ -205,5 +243,5 @@ void patientManage()
         clear();
         SetConsoleTitle("患者管理");
     }
-    while(selector(5,"增加患者","删除患者","列出所有患者","查询患者信息","返回",patientAdd,patientDelete,patientList,recordListByPatient,NULL)!=5);
+    while(selector(5,"增加患者","删除患者","列出所有患者","查询患者信息","返回",patientAdd,patientDelete,patientList,patientInfo,NULL)!=5);
 }

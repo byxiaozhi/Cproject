@@ -15,3 +15,4 @@ node* patients;
 int patientSelector(bool allowAdd);
 void patientSave();
 void patientRead();
+int patientGetById(char *id);

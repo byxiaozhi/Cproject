@@ -13,7 +13,7 @@ void recordSave()
     {
         record  *temp=listGet(records,i);
         record_hospitalized *h=&(temp->data_hospitalized);
-        fprintf(fp, "%d %s %d %d %d %d %d ",temp->id,temp->patientId,temp->docterId,temp->registeredOnly,temp->Bill_check,temp->Bill_medicine,temp->Bill_hospitalized);
+        fprintf(fp, "%d %s %d %d %d %d %d ",temp->id,temp->patientId,temp->docterId,temp->registeredOnly,temp->bill_check,temp->bill_medicine,temp->bill_hospitalized);
         fprintf(fp, "%d %d %d %d %d ",temp->dateTime.year,temp->dateTime.month,temp->dateTime.day,temp->dateTime.hour,temp->dateTime.minute);
         fprintf(fp, "%d %d %d %d %d ",h->startTime.year,h->startTime.month,h->startTime.day,h->startTime.hour,h->startTime.minute);
         fprintf(fp, "%d %d %d %d %d ",h->endTime.year,h->endTime.month,h->endTime.day,h->endTime.hour,h->endTime.minute);
@@ -44,7 +44,7 @@ void recordRead()
         return;
     }
     record *temp=(record*)malloc(sizeof(record));
-    while(fscanf(fp, "%d %s %d %d %d %d %d ",&temp->id,temp->patientId,&temp->docterId,(int*)&temp->registeredOnly,&temp->Bill_check,&temp->Bill_medicine,&temp->Bill_hospitalized)==7)
+    while(fscanf(fp, "%d %s %d %d %d %d %d ",&temp->id,temp->patientId,&temp->docterId,(int*)&temp->registeredOnly,&temp->bill_check,&temp->bill_medicine,&temp->bill_hospitalized)==7)
     {
         record_hospitalized *h=&(temp->data_hospitalized);
         fscanf(fp, "%d %d %d %d %d ",&temp->dateTime.year,&temp->dateTime.month,&temp->dateTime.day,&temp->dateTime.hour,&temp->dateTime.minute);
@@ -73,6 +73,40 @@ void recordRead()
     free(temp);
     fclose(fp);
 }
+
+void recordChangeCheck(int index,int money)
+{
+    record *temp = listGet(records,index);
+    patient *temp2 = listGet(patients,patientGetById(temp->patientId));
+
+    temp->bill_check+=money;
+    temp2->bill_check+=money;
+    turnover_all+=money;
+    turnover_check+=money;
+}
+
+void recordChangeMedicine(int index,int money)
+{
+    record *temp = listGet(records,index);
+    patient *temp2 = listGet(patients,patientGetById(temp->patientId));
+
+    temp->bill_medicine+=money;
+    temp2->bill_medicine+=money;
+    turnover_all+=money;
+    turnover_medicine+=money;
+}
+
+void recordChangeHospitalized(int index,int money)
+{
+    record *temp = listGet(records,index);
+    patient *temp2 = listGet(patients,patientGetById(temp->patientId));
+
+    temp->bill_hospitalized+=money;
+    temp2->bill_hospitalized+=money;
+    turnover_all+=money;
+    turnover_hospitalized+=money;
+}
+
 
 //获取挂号检查总价，参数为挂号储存索引
 int recordGetPriceOfCheck(int index)
@@ -114,6 +148,26 @@ int recordGetById(int id)
     return -1;
 }
 
+bool recordRemove(int index,bool refund)
+{
+    record *temp=listGet(records,index);
+    if(temp==NULL)
+    {
+        return false;
+    }
+    if(refund)
+    {
+        recordChangeCheck(index,-temp->bill_check);
+        recordChangeMedicine(index,-temp->bill_medicine);
+        recordChangeHospitalized(index,-temp->bill_hospitalized);
+    }
+    listDelete(temp->data_check);
+    listDelete(temp->data_medicine);
+    listRemove(records,index);
+    recordSave();
+    return true;
+}
+
 int recordGetByUser()
 {
     int id,i;
@@ -133,15 +187,73 @@ int recordGetByUser()
 
 void recordRegister()
 {
+    int t1=0,t2=0;
+    //检查今天医院是否挂号超过500
+    for(int i=0; i<listSize(records); i++)
+    {
+        record *t=listGet(records,i);
+        if(t->dateTime.day==nowTime.day)
+            t1++;
+    }
+    if(t1>=500)
+    {
+        printf("今天医院受理挂号已满，无法挂号，");
+        system("pause");
+        return;
+    }
+
+    //开始选择患者
     int pi = patientSelector(true);
     if(pi==-1)
         return;
+    patient *p = listGet(patients,pi);
+
+    //检查患者是否挂号超过5个
+    for(int i=0; i<listSize(records); i++)
+    {
+        record *t=listGet(records,i);
+        if(t->dateTime.day==nowTime.day && strcmp(t->patientId,p->id))
+            t1++;
+    }
+    if(t1>=5)
+    {
+        printf("患者今天已经挂号5个，无法再挂号，");
+        system("pause");
+        return;
+    }
+
+    //开始选择医生
     int di = docterSelector();
     if(di==-1)
         return;
-    patient *p = listGet(patients,pi);
     docter *d = listGet(docters,di);
-    clear();
+
+
+    //检查患者是否在同一科室挂过号，医生挂号是否达到20
+    for(int i=0; i<listSize(records); i++)
+    {
+        record *t=listGet(records,i);
+        if(t->dateTime.day==nowTime.day && d->id==t->docterId)
+            t1++;
+        docter *td=listGet(docters,docterGetById(t->docterId));
+        if(t->dateTime.day==nowTime.day && strcmp(t->patientId,p->id) && td->department==d->department)
+            t2++;
+    }
+    if(t1>=20)
+    {
+        clear();
+        printf("这个医生今天受理挂号达到20个，无法再挂号");
+        system("pause");
+        return;
+    }
+    if(t2>=1)
+    {
+        printf("患者今天已经在这个科室挂过号，无法再挂号，");
+        system("pause");
+        return;
+    }
+
+
     SetConsoleTitle("新建挂号");
     printf("\n  患者：%s\n  科室：%s\n  医生：%s\n",p->name,getDepartment(d->department),d->name);
     printf("\n请输入y确认挂号（默认为n）：");
@@ -199,6 +311,7 @@ void check()
         {
         case 1:
         {
+            select = 0;
             record_check *check = (record_check*)malloc(sizeof(record_check));
             printf("\n\n请输入检查名称：");
             scanf("%s",check->name);
@@ -206,15 +319,21 @@ void check()
             float price;
             scanf("%f",&price);
             check->price = price*100;
+            if(recordGetPriceOfCheck(i)+check->price>10*10000*100){
+                    printf("\n检查总价不能超过10万，");
+                    system("pause");
+                    continue;
+            }
+
             listAddLast(checks,check);
-            select = 0;
+
         }
         break;
         case 2:
+            select = 0;
             printf("\n\n请输入要删除的序号：");
             scanf("%d",&select);
             listRemove(checks,select);
-            select = 0;
             break;
         default:
             printf("\n\n操作：1.增加记录 2.删除记录 3.确认保存\n\n请选择：");
@@ -224,10 +343,7 @@ void check()
 
     //处理金额变化
     int d_total = recordGetPriceOfCheck(i)-total0;
-    temp->Bill_check+=d_total;
-    turnover_check+=d_total;
-    turnover_all+=d_total;
-
+    recordChangeCheck(i,d_total);
     recordSave();
 }
 
@@ -258,6 +374,7 @@ void medicine()
         {
         case 1:
         {
+            select = 0;
             record_medicine *medicine = (record_medicine*)malloc(sizeof(record_medicine));
             printf("\n\n请输入药品名称：");
             scanf("%s",medicine->name);
@@ -267,15 +384,20 @@ void medicine()
             medicine->price = price*100;
             printf("请输入药品数量：");
             scanf("%d",&medicine->num);
+            if(recordGetPriceOfMedicine(i)+medicine->price*medicine->num>10*10000*100){
+                    printf("\n药品总价不能超过10万，");
+                    system("pause");
+                    continue;
+            }
             listAddLast(medicines,medicine);
-            select = 0;
+
         }
         break;
         case 2:
+            select = 0;
             printf("\n\n请输入要删除的序号：");
             scanf("%d",&select);
             listRemove(medicines,select);
-            select = 0;
             break;
         default:
             printf("\n\n操作：1.增加记录 2.删除记录 3.确认保存\n\n请选择：");
@@ -285,9 +407,7 @@ void medicine()
 
     //处理金额变化
     int d_total = recordGetPriceOfMedicine(i)-total0;
-    temp->Bill_medicine+=d_total;
-    turnover_medicine+=d_total;
-    turnover_all+=d_total;
+    recordChangeMedicine(i,d_total);
     recordSave();
 }
 
@@ -340,11 +460,19 @@ void hospitalized()
         scanf("%d",&tempTime.minute);
         clear();
 
+        if(!timeCheck(tempTime) || dayCount(tempTime)<dayCount(nowTime)+1)
+        {
+            clear();
+            printf("时间输入错误，");
+            system("pause");
+            return;
+        }
+
         printf("开始住院时间：%d/%d/%d %d:%d\n",nowTime.year,nowTime.month,nowTime.day,nowTime.hour,nowTime.minute);
-        printf("预计出院时间：%d/%d/%d %d:%d",tempTime.year,tempTime.month,tempTime.day,tempTime.hour,tempTime.minute);
+        printf("预计出院时间：%d/%d/%d %d:%d\n",tempTime.year,tempTime.month,tempTime.day,tempTime.hour,tempTime.minute);
         int days=dayCount(tempTime)-dayCount(nowTime);
         int deposit=100000+days*20000;
-        printf("需要缴纳押金（1000 + 预计住院天数 X 200）：%d 元",deposit/100.0);
+        printf("需要缴纳押金（1000 + 预计住院天数 X 200）：%.2f 元",deposit/100.0);
 
         printf("\n请输入y确认开始住院（默认为n）：");
         if(getchar()=='y')
@@ -373,7 +501,7 @@ void hospitalized()
             printf("当前时间：%d/%d/%d %d:%d\n",nowTime.year,nowTime.month,nowTime.day,nowTime.hour,nowTime.minute);
             printf("初始押金：%.2f 元\n",temp->data_hospitalized.deposit/100.0);
             printf("剩余押金：%.2f 元\n\n",getOverDeposit(i)/100.0);
-            printf("1.补充押金 2.登记出院 3.返回\n");
+            printf("1.补充押金 2.登记出院 3.返回\n\n");
             printf("请选择：");
             scanf("%d",&select);
             if(select==1)
@@ -393,16 +521,21 @@ void hospitalized()
             else if(select==2)
             {
                 clear();
+                if(getOverDeposit(i)<0)
+                {
+                    printf("剩余押金小于0，需要补充押金才能登记出院，");
+                    system("pause");
+                    select=0;
+                    continue;
+                }
                 int od = getOverDeposit(i);
                 int used = temp->data_hospitalized.deposit-od;
                 printf("住院共花费 %d 元，登记出院将退还 %d 元押金\n输入y确认登记（默认为n）：",used/100,od/100);
                 scanf("%c",(char*)&select);
                 if(select=='y')
                 {
+                    recordChangeHospitalized(i,used);
                     temp->data_hospitalized.deposit=0;
-                    temp->Bill_hospitalized+=od;
-                    turnover_hospitalized+=od;
-                    turnover_all+=od;
                     temp->data_hospitalized.endTime=nowTime;
                     select = 3;
                 }
@@ -430,7 +563,7 @@ void recordListAll()
         docter *temp3=listGet(docters,docterGetById(temp->docterId));
         printf("%-10d %-12s %-12s %-12s %-12.2f %-12.2f %-12.2f %-12.2f",
                temp->id,temp2->name,getDepartment(temp3->department),temp3->name,
-               temp->Bill_check/100.0,temp->Bill_medicine/100.0,temp->Bill_hospitalized/100.0,temp->data_hospitalized.deposit/100.0);
+               temp->bill_check/100.0,temp->bill_medicine/100.0,temp->bill_hospitalized/100.0,temp->data_hospitalized.deposit/100.0);
         printf("\n");
     }
     system("pause");
@@ -458,7 +591,7 @@ void recordListByDepartment()
             continue;
         printf("%-10d %-12s %-12s %-12s %-12.2f %-12.2f %-12.2f %-12.2f",
                temp->id,temp2->name,getDepartment(temp3->department),temp3->name,
-               temp->Bill_check/100.0,temp->Bill_medicine/100.0,temp->Bill_hospitalized/100.0,temp->data_hospitalized.deposit/100.0);
+               temp->bill_check/100.0,temp->bill_medicine/100.0,temp->bill_hospitalized/100.0,temp->data_hospitalized.deposit/100.0);
         printf("\n");
     }
     system("pause");
@@ -471,8 +604,6 @@ void recordListByDocter()
     if(di==-1)
         return;
     docter *d = listGet(docters,di);
-
-    clear();
     printf("%-10s %-12s %-12s %-12s %-12s %-12s %-12s %-12s\n","挂号","姓名","科室","医生","检查花费","开药花费","住院花费","住院押金");
     for(int i=0; i<listSize(records); i++)
     {
@@ -483,7 +614,7 @@ void recordListByDocter()
         docter *temp3=listGet(docters,docterGetById(temp->docterId));
         printf("%-10d %-12s %-12s %-12s %-12.2f %-12.2f %-12.2f %-12.2f",
                temp->id,temp2->name,getDepartment(temp3->department),temp3->name,
-               temp->Bill_check/100.0,temp->Bill_medicine/100.0,temp->Bill_hospitalized/100.0,temp->data_hospitalized.deposit/100.0);
+               temp->bill_check/100.0,temp->bill_medicine/100.0,temp->bill_hospitalized/100.0,temp->data_hospitalized.deposit/100.0);
         printf("\n");
     }
     system("pause");
@@ -497,7 +628,6 @@ void recordListByPatient()
     if(pi==-1)
         return;
     patient *p = listGet(patients,pi);
-    clear();
     printf("%-10s %-12s %-12s %-12s %-12s %-12s %-12s %-12s\n","挂号","姓名","科室","医生","检查花费","开药花费","住院花费","住院押金");
     for(int i=0; i<listSize(records); i++)
     {
@@ -508,7 +638,7 @@ void recordListByPatient()
         docter *temp3=listGet(docters,docterGetById(temp->docterId));
         printf("%-10d %-12s %-12s %-12s %-12.2f %-12.2f %-12.2f %-12.2f",
                temp->id,temp2->name,getDepartment(temp3->department),temp3->name,
-               temp->Bill_check/100.0,temp->Bill_medicine/100.0,temp->Bill_hospitalized/100.0,temp->data_hospitalized.deposit/100.0);
+               temp->bill_check/100.0,temp->bill_medicine/100.0,temp->bill_hospitalized/100.0,temp->data_hospitalized.deposit/100.0);
         printf("\n");
     }
     system("pause");
@@ -525,7 +655,7 @@ void recordListByTime()
     time end=nowTime;
     if(select==4)
     {
-        return 0;
+        return;
     }
     else if(select==1)
     {
@@ -556,8 +686,14 @@ void recordListByTime()
         scanf("%d",&tempTime.hour);
         printf("分：");
         scanf("%d",&tempTime.minute);
+        if(!timeCheck(tempTime))
+        {
+            clear();
+            printf("时间输入错误，");
+            system("pause");
+            return;
+        }
         start=tempTime;
-
         printf("\n请输入结束时间\n");
         tempTime.year=2020;
         printf("月：");
@@ -569,6 +705,14 @@ void recordListByTime()
         printf("分：");
         scanf("%d",&tempTime.minute);
         end=tempTime;
+
+        if(!timeCheck(tempTime))
+        {
+            clear();
+            printf("时间输入错误，");
+            system("pause");
+            return;
+        }
     }
     clear();
     printf("%-10s %-12s %-12s %-12s %-12s %-12s %-12s %-12s\n","挂号","姓名","科室","医生","检查花费","开药花费","住院花费","住院押金");
@@ -586,23 +730,61 @@ void recordListByTime()
         docter *temp3=listGet(docters,docterGetById(temp->docterId));
         printf("%-10d %-12s %-12s %-12s %-12.2f %-12.2f %-12.2f %-12.2f",
                temp->id,temp2->name,getDepartment(temp3->department),temp3->name,
-               temp->Bill_check/100.0,temp->Bill_medicine/100.0,temp->Bill_hospitalized/100.0,temp->data_hospitalized.deposit/100.0);
+               temp->bill_check/100.0,temp->bill_medicine/100.0,temp->bill_hospitalized/100.0,temp->data_hospitalized.deposit/100.0);
         printf("\n");
     }
     system("pause");
 
 }
 
-void hospitalizationStatistics(){
-
-
-
+void hospitalizationStatistics()
+{
+    clear();
+    timeFlush();
+    printf("%-10s %-12s %-12s %-12s %-12s %-12s %-12s\n","挂号","姓名","科室","医生","初始押金","剩余押金","住院开始时间");
+    for(int i=0; i<listSize(records); i++)
+    {
+        record *temp=listGet(records,i);
+        patient *temp2=listGet(patients,patientGetById(temp->patientId));
+        docter *temp3=listGet(docters,docterGetById(temp->docterId));
+        record_hospitalized h=temp->data_hospitalized;
+        if(h.startTime.year==0 || h.endTime.year!=0)
+            continue;
+        printf("%-10d %-12s %-12s %-12s %-12.2f %-12.2f %d/%d/%d %d:%d",
+               temp->id,temp2->name,getDepartment(temp3->department),temp3->name,
+               h.deposit/100.0,getOverDeposit(i)/100.0,
+               h.startTime.year,h.startTime.month,h.startTime.month,h.startTime.hour,h.startTime.minute);
+        printf("\n");
+    }
+    system("pause");
 }
 
-void docterStatistics(){
-
-
-
+void docterStatistics()
+{
+    timeFlush();
+    SetConsoleTitle("列出所有医生");
+    printf("%-10s %-12s %-12s %-12s %-12s\n","工号","姓名","今日出诊","本月出诊","共出诊");
+    for(int i=0; i<listSize(docters); i++)
+    {
+        docter *temp=listGet(docters,i);
+        printf("%-10d %-12s ",temp->id,temp->name);
+        int day=0,mon=0,total=0;
+        for(int i=0; i<listSize(records); i++)
+        {
+            record *t=listGet(records,i);
+            docter *d=listGet(docters,docterGetById(t->docterId));
+            if(d->id==temp->id)
+            {
+                if(t->dateTime.day==nowTime.day)
+                    day++;
+                if(t->dateTime.month==nowTime.month)
+                    mon++;
+                total++;
+            }
+        }
+        printf("%-12d %-12d %-12d\n",day,mon,total);
+    }
+    system("pause");
 }
 
 void recordList()
