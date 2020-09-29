@@ -599,15 +599,17 @@ void recordListAll()
 {
 
     clear();
-    printf("\n  %-10s %-12s %-12s %-12s %-12s %-12s %-12s %-12s\n","挂号","姓名","科室","医生","检查花费","开药花费","住院花费","住院押金");
+    printf("\n  %-8s %-12s %-12s %-12s %-12s %-12s %-12s %-12s%s\n","挂号","姓名","科室","医生","检查花费","开药花费","住院花费","住院押金","登记时间");
     for(int i=0; i<listSize(records); i++)
     {
         record *temp=listGet(records,i);
         patient *temp2=listGet(patients,patientGetById(temp->patientId));
         docter *temp3=listGet(docters,docterGetById(temp->docterId));
-        printf("  %-10d %-12s %-12s %-12s %-12.2f %-12.2f %-12.2f %-12.2f",
+        printf("  %-8d %-12s %-12s %-12s %-12.2f %-12.2f %-12.2f %-12.2f",
                temp->id,temp2->name,getDepartment(temp3->department),temp3->name,
                temp->bill_check/100.0,temp->bill_medicine/100.0,temp->bill_hospitalized/100.0,temp->data_hospitalized.deposit/100.0);
+        time t = temp->dateTime;
+        printf("%d/%d/%d %d:%d",t.year,t.month,t.day,t.hour,t.minute);
         printf("\n");
     }
     printf("\n  ");
@@ -626,7 +628,7 @@ void recordListByDepartment()
         return;
     }
     clear();
-    printf("\n  %-10s %-12s %-12s %-12s %-12s %-12s %-12s %-12s\n","挂号","姓名","科室","医生","检查花费","开药花费","住院花费","住院押金");
+    printf("\n  %-8s %-12s %-12s %-12s %-12s %-12s %-12s %-12s%s\n","挂号","姓名","科室","医生","检查花费","开药花费","住院花费","住院押金","登记时间");
     for(int i=0; i<listSize(records); i++)
     {
         record *temp=listGet(records,i);
@@ -634,9 +636,11 @@ void recordListByDepartment()
         docter *temp3=listGet(docters,docterGetById(temp->docterId));
         if(temp3->department!=d)
             continue;
-        printf("  %-10d %-12s %-12s %-12s %-12.2f %-12.2f %-12.2f %-12.2f",
+        printf("  %-8d %-12s %-12s %-12s %-12.2f %-12.2f %-12.2f %-12.2f",
                temp->id,temp2->name,getDepartment(temp3->department),temp3->name,
                temp->bill_check/100.0,temp->bill_medicine/100.0,temp->bill_hospitalized/100.0,temp->data_hospitalized.deposit/100.0);
+        time t = temp->dateTime;
+        printf("%d/%d/%d %d:%d",t.year,t.month,t.day,t.hour,t.minute);
         printf("\n");
     }
     printf("\n  ");
@@ -650,7 +654,7 @@ void recordListByDocter()
     if(di==-1)
         return;
     docter *d = listGet(docters,di);
-    printf("\n  %-10s %-12s %-12s %-12s %-12s %-12s %-12s %-12s\n","挂号","姓名","科室","医生","检查花费","开药花费","住院花费","住院押金");
+    printf("\n  %-8s %-12s %-12s %-12s %-12s %-12s %-12s %-12s%s\n","挂号","姓名","科室","医生","检查花费","开药花费","住院花费","住院押金","登记时间");
     for(int i=0; i<listSize(records); i++)
     {
         record *temp=listGet(records,i);
@@ -658,9 +662,11 @@ void recordListByDocter()
             continue;
         patient *temp2=listGet(patients,patientGetById(temp->patientId));
         docter *temp3=listGet(docters,docterGetById(temp->docterId));
-        printf("  %-10d %-12s %-12s %-12s %-12.2f %-12.2f %-12.2f %-12.2f",
+        printf("  %-8d %-12s %-12s %-12s %-12.2f %-12.2f %-12.2f %-12.2f",
                temp->id,temp2->name,getDepartment(temp3->department),temp3->name,
                temp->bill_check/100.0,temp->bill_medicine/100.0,temp->bill_hospitalized/100.0,temp->data_hospitalized.deposit/100.0);
+        time t = temp->dateTime;
+        printf("%d/%d/%d %d:%d",t.year,t.month,t.day,t.hour,t.minute);
         printf("\n");
     }
     printf("\n  ");
@@ -670,11 +676,12 @@ void recordListByDocter()
 //按照患者查询记录
 void recordListByPatient()
 {
+    clear();
     int pi = patientSelector(false);
     if(pi==-1)
         return;
     patient *p = listGet(patients,pi);
-    printf("\n  %-10s %-12s %-12s %-12s %-12s %-12s %-12s %-12s\n","挂号","姓名","科室","医生","检查花费","开药花费","住院花费","住院押金");
+    printf("\n  %-8s %-12s %-12s %-12s %-12s %-12s %-12s %-12s%s\n","挂号","姓名","科室","医生","检查花费","开药花费","住院花费","住院押金","登记时间");
     for(int i=0; i<listSize(records); i++)
     {
         record *temp=listGet(records,i);
@@ -682,9 +689,11 @@ void recordListByPatient()
             continue;
         patient *temp2=listGet(patients,patientGetById(temp->patientId));
         docter *temp3=listGet(docters,docterGetById(temp->docterId));
-        printf("  %-10d %-12s %-12s %-12s %-12.2f %-12.2f %-12.2f %-12.2f",
+        printf("  %-8d %-12s %-12s %-12s %-12.2f %-12.2f %-12.2f %-12.2f",
                temp->id,temp2->name,getDepartment(temp3->department),temp3->name,
                temp->bill_check/100.0,temp->bill_medicine/100.0,temp->bill_hospitalized/100.0,temp->data_hospitalized.deposit/100.0);
+        time t = temp->dateTime;
+        printf("%d/%d/%d %d:%d",t.year,t.month,t.day,t.hour,t.minute);
         printf("\n");
     }
     printf("\n  ");
@@ -762,7 +771,7 @@ void recordListByTime()
         }
     }
     clear();
-    printf("\n  %-10s %-12s %-12s %-12s %-12s %-12s %-12s %-12s\n","挂号","姓名","科室","医生","检查花费","开药花费","住院花费","住院押金");
+    printf("\n  %-8s %-12s %-12s %-12s %-12s %-12s %-12s %-12s%s\n","挂号","姓名","科室","医生","检查花费","开药花费","住院花费","住院押金","登记时间");
     for(int i=0; i<listSize(records); i++)
     {
         record *temp=listGet(records,i);
@@ -775,9 +784,11 @@ void recordListByTime()
 
         patient *temp2=listGet(patients,patientGetById(temp->patientId));
         docter *temp3=listGet(docters,docterGetById(temp->docterId));
-        printf("  %-10d %-12s %-12s %-12s %-12.2f %-12.2f %-12.2f %-12.2f",
+        printf("  %-8d %-12s %-12s %-12s %-12.2f %-12.2f %-12.2f %-12.2f",
                temp->id,temp2->name,getDepartment(temp3->department),temp3->name,
                temp->bill_check/100.0,temp->bill_medicine/100.0,temp->bill_hospitalized/100.0,temp->data_hospitalized.deposit/100.0);
+        time t = temp->dateTime;
+        printf("%d/%d/%d %d:%d",t.year,t.month,t.day,t.hour,t.minute);
         printf("\n");
     }
     printf("\n  ");
