@@ -32,51 +32,62 @@ int selector(int args, ...)
 
 
 //计算这一年已经过的天数
-int dayCount(int year,int month,int day)
+int dayCount(time t)
 {
     int sum = 0;
-    switch(month)
+    switch(t.month)
     {
     case 1:
-        sum = day;
+        sum = t.day;
         break;
     case 2:
-        sum = 31 + day;
+        sum = 31 + t.day;
         break;
     case 3:
-        sum = 59 + day;
+        sum = 59 + t.day;
         break;
     case 4:
-        sum = 90 + day;
+        sum = 90 + t.day;
         break;
     case 5:
-        sum = 120 + day;
+        sum = 120 + t.day;
         break;
     case 6:
-        sum = 151 + day;
+        sum = 151 + t.day;
         break;
     case 7:
-        sum = 181 + day;
+        sum = 181 + t.day;
         break;
     case 8:
-        sum = 212 + day;
+        sum = 212 + t.day;
         break;
     case 9:
-        sum = 243 + day;
+        sum = 243 + t.day;
         break;
     case 10:
-        sum = 273 + day;
+        sum = 273 + t.day;
         break;
     case 11:
-        sum = 304 + day;
+        sum = 304 + t.day;
         break;
     case 12:
-        sum = 334 + day;
+        sum = 334 + t.day;
         break;
     }
-    if(month > 2 && (((year % 4 == 0) && (year % 100 !=0)) || (year % 400) == 0))
+    if(t.month > 2 && (((t.year % 4 == 0) && (t.year % 100 !=0)) || (t.year % 400) == 0))
         sum++;
     return sum;
+}
+
+//计算星期几
+int weekCount(time t)
+{
+    if(t.month == 1 || t.month == 2) {
+        t.month += 12;
+        t.year --;
+    }
+    int week = (t.day + 2 * t.month + 3 * (t.month + 1) / 5 + t.year + t.year / 4 - t.year / 100 + t.year / 400) % 7;
+    return week + 1;
 }
 
 void clear()
@@ -84,4 +95,13 @@ void clear()
     system("cls");
     fflush(stdin);
 }
+
+void timeFlush()
+{
+
+    FILE *fp=fopen("time.txt", "r");
+    fscanf(fp, "%d/%d/%d %d:%d",&nowTime.year,&nowTime.month,&nowTime.day,&nowTime.hour,&nowTime.minute);
+    fclose(fp);
+}
+
 

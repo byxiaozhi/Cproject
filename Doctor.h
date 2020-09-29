@@ -20,3 +20,4 @@ node* docters;
 void docterRead();
 int docterSelector();
 char* getDepartment(int i);
+int docterGetById(int id);

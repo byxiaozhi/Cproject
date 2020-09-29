@@ -83,14 +83,14 @@ void listAddLast(node* head, void* data)
     info->size++;
 }
 
-//查询并删除指定节点，若删除成功返回1，失败返回0
-int listRemove(node* head, int index)
+//查询并删除指定节点，若删除成功返回真，失败返回假
+bool listRemove(node* head, int index)
 {
     listInfo* info=((listInfo*)head->data);
 
     //不存在这个节点，返回0
     if(index<0 || index>=info->size)
-        return 0;
+        return false;
 
     node* temp;
     //找到该节点的上一个节点，并将其指向要删除节点的下一个节点
@@ -107,6 +107,7 @@ int listRemove(node* head, int index)
     free(remove);
 
     info->size--;
+    return true;
 }
 
 //返回链表节点数量，失败返回-1

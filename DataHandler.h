@@ -1,4 +1,5 @@
 #pragma once
+#include "stdbool.h"
 typedef struct node
 {
     void* data;
@@ -16,5 +17,5 @@ void listDelete();
 void* listGet(node* head, int index);
 void listAddFirst(node* head, void* data);
 void listAddLast(node* head, void* data);
-int listRemove(node* head, int index);
+bool listRemove(node* head, int index);
 int listSize(node* head);

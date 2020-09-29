@@ -131,6 +131,17 @@ void docterAdd()
     }
 }
 
+int docterGetById(int id)
+{
+    for(int i=0; i<listSize(docters); i++)
+    {
+        docter *temp=listGet(docters,i);
+        if(temp->id==id)
+            return i;
+    }
+    return -1;
+}
+
 int docterSelector()
 {
     char comfirm;
@@ -155,12 +166,9 @@ int docterSelector()
     printf("\n请输入工号以确认医生：");
     int id;
     scanf("%d",&id);
-    for(i=0; i<listSize(docters); i++)
-    {
-        docter *temp=listGet(docters,i);
-        if(temp->id==id)
-            return i;
-    }
+    int r = docterGetById(id);
+    if(r!=-1)
+        return r;
     clear();
     printf("未找到该医生，");
     system("pause");
@@ -174,13 +182,8 @@ void docterDelete()
     clear();
     printf("请输入工号进行查询：");
     scanf("%d",&id);
-    for(i=0; i<listSize(docters); i++)
-    {
-        temp=listGet(docters,i);
-        if(temp->id==id)
-            break;
-    }
-    if(i==listSize(docters))
+    i = docterGetById(id);
+    if(i==-1)
     {
         clear();
         printf("未找到该医生，");
@@ -189,6 +192,7 @@ void docterDelete()
     else
     {
         clear();
+        temp=listGet(docters,i);
         printf("请验证信息\n");
         printf("工号：%d\n姓名：%s\n级别：%s\n科室：%s\n出诊时间：",temp->id,temp->name,getLevel(temp->level),getDepartment(temp->department));
         printVisitTime(temp->visitTime);

@@ -8,8 +8,10 @@ typedef struct {
     int bill_check;//检查账单
     int bill_medicine;//开药账单
     int bill_hospitalized;//住院账单
-    int deposit;//剩余押金
+    int deposit;//押金
 }patient;
 
 node* patients;
 int patientSelector();
+void patientSave();
+void patientRead();

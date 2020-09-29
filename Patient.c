@@ -84,6 +84,17 @@ bool patientAdd()
     }
 }
 
+int patientGetById(char *id)
+{
+    for(int i=0; i<listSize(patients); i++)
+    {
+        patient *temp=listGet(patients,i);
+        if(strcmp(temp->id,id)==0)
+            return i;
+    }
+    return -1;
+}
+
 int patientSelector()
 {
     SetConsoleTitle("选择患者");
@@ -112,13 +123,9 @@ int patientSelector()
         printf("\n请输入身份证号以确认患者：");
         char id[100];
         scanf("%s",id);
-
-        for(i=0; i<listSize(patients); i++)
-        {
-            patient *temp=listGet(patients,i);
-            if(strcmp(temp->id,id)==0)
-                return i;
-        }
+        int r = patientGetById(id);
+        if(r!=-1)
+            return r;
         clear();
         printf("未找到该患者，");
         system("pause");
@@ -135,13 +142,8 @@ void patientDelete()
     clear();
     printf("请输入身份证进行查询：");
     scanf("%s",id);
-    for(i=0; i<listSize(patients); i++)
-    {
-        temp=listGet(patients,i);
-        if(strcmp(temp->id,id)==0)
-            break;
-    }
-    if(i==listSize(patients))
+    i = patientGetById(id);
+    if(i==-1)
     {
         clear();
         printf("未找到该患者，");
@@ -150,6 +152,7 @@ void patientDelete()
     else
     {
         clear();
+        temp=listGet(patients,i);
         printf("请验证信息\n");
         printf("姓名：%s\n身份证号：%s\n年龄：%d\n检查账单：%d\n开药账单：%d\n住院账单：%d\n总账单：%d\n剩余押金：%d",temp->name,temp->id,temp->age,temp->bill_all,temp->bill_check,temp->bill_medicine,temp->bill_hospitalized,temp->deposit);
 
