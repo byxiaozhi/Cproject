@@ -70,7 +70,7 @@ void recordRead()
             listAddLast(temp->data_medicine,medicine);
         }
         listAddLast(records,temp);
-        temp=(record*)malloc(sizeof(records));
+        temp=(record*)malloc(sizeof(record));
     }
     free(temp);
     fclose(fp);
@@ -608,7 +608,6 @@ void recordListAll()
         printf("  %-10d %-12s %-12s %-12s %-12.2f %-12.2f %-12.2f %-12.2f",
                temp->id,temp2->name,getDepartment(temp3->department),temp3->name,
                temp->bill_check/100.0,temp->bill_medicine/100.0,temp->bill_hospitalized/100.0,temp->data_hospitalized.deposit/100.0);
-        printf("%d",temp->docterId);
         printf("\n");
     }
     printf("\n  ");
