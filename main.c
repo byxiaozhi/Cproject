@@ -23,6 +23,7 @@ int init()
     patientRead();
     recordRead();
     hospitalRead();
+
 }
 
 int main()
